@@ -28,8 +28,7 @@ verify_labeldata = function(x){
 	#  x  data frame returned by 'get_labeldata'
 	
 	# load the sample list, convert dates to date object
-	f = system.file("extdata", "malaise_samples.csv", package = "wasps2kotka")
-	samples = utils::read.csv(f, as.is=T)
+	samples = wasps2kotka::malaise_samples
 	samples$date_begin = as.Date(samples$date_begin, format="%d.%m.%Y")
 	samples$date_end = as.Date(samples$date_end, format="%d.%m.%Y")
 	

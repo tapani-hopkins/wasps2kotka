@@ -40,8 +40,7 @@ get_labeldata = function(lab){
 	x$sex[intersect(f, m)] = NA
 	
 	# load the sample list
-	f = system.file("extdata", "malaise_samples.csv", package = "wasps2kotka")
-	samples = utils::read.csv(f, as.is=T)
+	samples = wasps2kotka::malaise_samples
 
 	# convert sample dates to Date objects
 	samples$date_begin = as.Date(samples$date_begin, format="%d.%m.%Y")
