@@ -14,10 +14,12 @@
 #' @seealso [get_labeldata()] which extracts the data used by this function, [verify_labeldata()] which checks the extracted data for problems.
 #' 
 #' @examples
+#' \dontrun{
 #' lab = c("cct1-141022", "PERU 1.-15.12.2000 I1/17", "Not a wasp label at all")
 #' x = get_labeldata(lab)
 #' x = verify_labeldata(x)
 #' upload = make_kotkaupload(x, write.csv=FALSE)
+#' }
 make_kotkaupload = function(x, write.csv=TRUE){
 	# Converts data extracted from labels into an upload file for Kotka.
 	# Uses helper function 'add_ecuadordata' and function 'add_malaisedata'.

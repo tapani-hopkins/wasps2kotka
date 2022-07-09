@@ -25,9 +25,11 @@ Checks include:
 }
 }
 \examples{
+\dontrun{
 lab = c("cct1-141022", "PERU 1.-15.12.2000 I1/17")
 x = get_labeldata(lab)
 x = verify_labeldata(x)
+}
 }
 \seealso{
 \code{\link[=get_labeldata]{get_labeldata()}} whose data this function checks, \code{\link[=make_kotkaupload]{make_kotkaupload()}} which creates a Kotka upload file out of the returned data frame.

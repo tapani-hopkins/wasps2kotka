@@ -16,9 +16,11 @@
 #' @seealso [get_labeldata()] whose data this function checks, [make_kotkaupload()] which creates a Kotka upload file out of the returned data frame.
 #' 
 #' @examples
+#' \dontrun{
 #' lab = c("cct1-141022", "PERU 1.-15.12.2000 I1/17")
 #' x = get_labeldata(lab)
 #' x = verify_labeldata(x)
+#' }
 verify_labeldata = function(x){
 	# Checks that data extracted from labels looks right.
 	# Uses helper function 'add'

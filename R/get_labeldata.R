@@ -10,6 +10,7 @@
 #' @seealso [verify_labeldata()] which checks the results, [make_kotkaupload()] which creates a Kotka upload file out of the returned (and optionally verified) data frame.
 #' 
 #' @examples
+#' \dontrun{
 #' lab = c(  
 #' "cct1-141022",  
 #' "h1/1",  
@@ -17,6 +18,7 @@
 #' "ECUADOR, Tiputini, 22. Oct 1998, Canopy fogging Lot# 1966 Meniscomorpha sp. 2"  
 #' )
 #' x = get_labeldata(lab)
+#' }
 get_labeldata = function(lab){
 	# Extracts dates, sample and other data from wasp labels.
 	# Uses function 'get_dates'.
