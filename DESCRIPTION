@@ -1,12 +1,17 @@
 Package: wasps2kotka
-Title: What the Package Does (One Line, Title Case)
+Title: Get wasp data from labels and upload to the Kotka database
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+    person("Tapani", "Hopkins", , "tapani-hopkins@users.noreply.github.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-2256-0098"))
+Description: Functions for use at the Zoological Museum of the University of Turku. Extract data from labels or get all the data related to a sample ID. Create a csv file for uploading the data to the Kotka Collection Management System. Works with the really large wasp collections at Turku: wasps collected by Malaise trapping in Peru and Uganda, and wasps collected by canopy fogging in Ecuador. 
+License: CC0
+URL: https://github.com/tapani-hopkins/wasps2kotka
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.0
+Imports: 
+    utils
+Depends: 
+    R (>= 2.10)
+LazyData: true
