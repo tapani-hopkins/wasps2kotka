@@ -1,16 +1,15 @@
 #' Extract data from wasp labels
 #'
-#' Extract dates, sample ID and other data from the wasp labels typically found at the museum. Handles wasp labels from the Malaise trapping in Peru (1998-2011), and from the canopy fogging in Ecuador. The resulting data frame can be used as is, or used as the basis for creating a Kotka upload.
+#' Extract dates, sample ID and other data from the wasp labels typically found at the museum. Handles wasp labels from the Malaise trapping in Peru (1998-2011), and from the canopy fogging in Ecuador. Can also recognise sample IDs from the Malaise trapping in Uganda (2014-2015). The resulting data frame can be used as is, or as the basis for creating a Kotka upload.
 #'
 #' @param lab A character vector of label texts.
 #'
-#' @return A data frame with the labels and corresponding data. 
+#' @return A data frame with the labels and the data extracted from them. 
 #' @export
 #'
 #' @seealso [verify_labeldata()] which checks the results, [make_kotkaupload()] which creates a Kotka upload file out of the returned (and optionally verified) data frame.
 #' 
 #' @examples
-#' \dontrun{
 #' lab = c(  
 #' "cct1-141022",  
 #' "h1/1",  
@@ -18,7 +17,6 @@
 #' "ECUADOR, Tiputini, 22. Oct 1998, Canopy fogging Lot# 1966 Meniscomorpha sp. 2"  
 #' )
 #' x = get_labeldata(lab)
-#' }
 get_labeldata = function(lab){
 	# Extracts dates, sample and other data from wasp labels.
 	# Uses function 'get_dates'.
@@ -61,6 +59,15 @@ get_labeldata = function(lab){
 	g = grep("G\u00F3mez", x$label)
 	i = match(x$date_end[g], samples$date_end)
 	x$sample[g] = samples$sample[i]
+	
+	# get Ugandan samples from the labels
+	for (s in 1:nrow(samples)){	
+		# search for this sample (e.g. "R93T2-141009") in the labels
+		l = grep(samples$sample[s], x$label, ignore.case=T)
+		
+		# save to 'x'
+		x$sample[l] = samples$sample[s]
+	}
 	
 	# return the labels and corresponding data
 	return(x)

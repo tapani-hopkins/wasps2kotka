@@ -41,7 +41,7 @@ add_ecuadordata = function(k, x){
 	#  x  data frame returned by 'get_labeldata'
 	
 	# load Kotka template for Ecuador data
-	f = system.file("extdata", "kotka_template_Ecuador.csv", package = "wasps2kotka")
+	f = system.file("extdata", "kotka_template_Ecuador.csv", package = "wasps2kotka", mustWork = TRUE)
 	kotka_template = utils::read.csv(f, row.names=1, colClasses = "character", check.names=F)
 	
 	# find Ecuadorian Tiputini and Onkone Gare labels 
@@ -97,12 +97,12 @@ add_malaisedata = function(k, x){
 	
 	# load the columns of sample data which should be copied to the Kotka upload
 	# add the dataset columns
-	f = system.file("extdata", "kotka_desired_malaise_sample_columns.csv", package = "wasps2kotka")
+	f = system.file("extdata", "kotka_desired_malaise_sample_columns.csv", package = "wasps2kotka", mustWork = TRUE)
 	what_cols = read(f, 0)[,1]
 	what_cols = c(what_cols, dcols)
 	
 	# load Kotka template for Malaise data (=data shared by all samples)
-	f = system.file("extdata", "kotka_template_malaise.csv", package = "wasps2kotka")
+	f = system.file("extdata", "kotka_template_malaise.csv", package = "wasps2kotka", mustWork = TRUE)
 	kotka_template = read(f, 2)
 	
 	# find the specimens which are from Peruvian or Ugandan Malaise samples,

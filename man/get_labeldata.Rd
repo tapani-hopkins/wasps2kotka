@@ -10,13 +10,12 @@ get_labeldata(lab)
 \item{lab}{A character vector of label texts.}
 }
 \value{
-A data frame with the labels and corresponding data.
+A data frame with the labels and the data extracted from them.
 }
 \description{
-Extract dates, sample ID and other data from the wasp labels typically found at the museum. Handles wasp labels from the Malaise trapping in Peru (1998-2011), and from the canopy fogging in Ecuador. The resulting data frame can be used as is, or used as the basis for creating a Kotka upload.
+Extract dates, sample ID and other data from the wasp labels typically found at the museum. Handles wasp labels from the Malaise trapping in Peru (1998-2011), and from the canopy fogging in Ecuador. Can also recognise sample IDs from the Malaise trapping in Uganda (2014-2015). The resulting data frame can be used as is, or as the basis for creating a Kotka upload.
 }
 \examples{
-\dontrun{
 lab = c(  
 "cct1-141022",  
 "h1/1",  
@@ -24,7 +23,6 @@ lab = c(
 "ECUADOR, Tiputini, 22. Oct 1998, Canopy fogging Lot# 1966 Meniscomorpha sp. 2"  
 )
 x = get_labeldata(lab)
-}
 }
 \seealso{
 \code{\link[=verify_labeldata]{verify_labeldata()}} which checks the results, \code{\link[=make_kotkaupload]{make_kotkaupload()}} which creates a Kotka upload file out of the returned (and optionally verified) data frame.

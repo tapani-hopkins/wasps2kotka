@@ -20,12 +20,10 @@ The columns of \code{x} are there for reference before uploading. Typically, col
 Create a Kotka upload file out of the data extracted from wasp labels (or obtained from sample IDs). Handles wasps from the Malaise trapping in Peru (1998-2011), and from the canopy fogging in Ecuador. Other specimens will be included in the upload, but will only have minimal data.
 }
 \examples{
-\dontrun{
 lab = c("cct1-141022", "PERU 1.-15.12.2000 I1/17", "Not a wasp label at all")
 x = get_labeldata(lab)
 x = verify_labeldata(x)
 upload = make_kotkaupload(x, write.csv=FALSE)
-}
 }
 \seealso{
 \code{\link[=get_labeldata]{get_labeldata()}} which extracts the data used by this function, \code{\link[=verify_labeldata]{verify_labeldata()}} which checks the extracted data for problems.
