@@ -7,7 +7,7 @@ R package for use at the [Zoological Museum of the University of Turku](https://
 
 Takes the text of the wasp labels (Peru and Ecuador) or the sample IDs of the wasps (Uganda). Then extracts data from the labels and creates a csv file for uploading the data to [Kotka](https://wiki.helsinki.fi/display/digit/Manual+for+Kotka). For the Peruvian and Ugandan wasps, data on the Malaise trapping is also included. 
 
-Typically used when faced with the daunting task of digitising thousands of tropical wasps, whose only information is on the labels. With this package, all you need to do is write down the label texts. The computer will do (almost) everything else to get the data to the [Kotka Collection Management System][Kotka](https://wiki.helsinki.fi/display/digit/Manual+for+Kotka) and [FinBIF](https://laji.fi/en).
+Typically used when faced with the daunting task of digitising thousands of tropical wasps, whose only information is on the labels. With this package, all you need to do is write down the label texts. The computer will do (almost) everything else to get the data to the [Kotka Collection Management System](https://wiki.helsinki.fi/display/digit/Manual+for+Kotka) and [FinBIF](https://laji.fi/en).
 
 
 ## Installation
@@ -31,7 +31,7 @@ example_labels = c( "PERU 1.-15.12.2000, I1/17", "Tiputini 22. Oct 1998 Canopy f
 library(wasps2kotka)
 
 # get data from the labels, verify it and create upload
-x = get_labeldata(labels)
+x = get_labeldata(example_labels)
 x = verify_labeldata(x)
 make_kotkaupload(x)
 ```
@@ -51,7 +51,7 @@ ZMUT NEOT ICH 209
 > cct1- 141022
 
 The job of this package is to go through all of these labels, and detect that:
-- label 1 is from sample *I1-17* and is a male
+- label 1 is from sample I1-17 and is a male
 - label 2 is a canopy fogged male collected at Tiputini 22 October 1998
 - label 3 is an Ugandan wasp from sample CCT1-141022
 
@@ -90,5 +90,7 @@ This results in a file (kotka_upload.csv) with three sets of columns. In order f
 2. **label data**: All the data extracted from the labels, such as dates, sex, sample ID etc.
 3. **Kotka**: All the data on the wasps in the format expected by Kotka.
 
-Before uploading to Kotka, open the file in e.g. Excel, and check any highlighted problems. You may also need to fill in some fields which the script does not currently handle, e.g. specimen ID, location and species name. Then delete the columns for problems and label data (they are clearly marked in the file), and upload to Kotka. 
+Before uploading to Kotka, open the file in e.g. Excel, and check any highlighted problems. You may also need to fill in some fields which the script does not currently handle, e.g. specimen ID, location and species name. 
+
+Then delete the columns for problems and label data (they are clearly marked in the file), and upload to Kotka. 
 
