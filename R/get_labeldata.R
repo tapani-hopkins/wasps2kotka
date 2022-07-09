@@ -45,7 +45,7 @@ get_labeldata = function(lab){
 	samples$date_end = as.Date(samples$date_end, format="%d.%m.%Y")
 
 	# get 1998 and 2000 samples from the labels
-	for (s in 1:nrow(samples)){	
+	for (s in which(samples$event=="Amazon1998" | samples$event=="Amazon2000")){	
 		# search for this sample (e.g. "H1/17") in the labels
 		l = grep(samples$sample_1998_2000[s], x$label, ignore.case=T)
 		
@@ -61,7 +61,7 @@ get_labeldata = function(lab){
 	x$sample[g] = samples$sample[i]
 	
 	# get Ugandan samples from the labels
-	for (s in 1:nrow(samples)){	
+	for (s in which(samples$event=="Uganda2014")){	
 		# search for this sample (e.g. "R93T2-141009") in the labels
 		l = grep(samples$sample[s], x$label, ignore.case=T)
 		
