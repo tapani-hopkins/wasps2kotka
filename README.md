@@ -62,7 +62,7 @@ To get this done, simply load the labels to R. You can e.g. save them in Excel, 
 labels = read.csv("/path/to/labelfile.csv", as.is=TRUE)[, 1]
 ```
 
-Once the labels are in R, all you need to do is get the data from them, (optionally) verify the label data, and create the Kotka upload file:
+Once the labels are in R, all you need to do is get the data from them (`get_labeldata`), optionally verify the label data (`verify_labeldata`), and create the Kotka upload file(`make_kotkaupload`):
 
 ``` r
 # example labels
