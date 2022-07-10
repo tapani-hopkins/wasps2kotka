@@ -54,11 +54,22 @@ get_labeldata = function(lab){
 	}
 	
 	# get 2008 and 2011 samples from the labels
-	# (by finding "Gómez" and comparing end dates to sample list)
-	# (note: this only works if no two samples have the same end date)
-	g = grep("G\u00F3mez", x$label)
-	i = match(x$date_end[g], samples$date_end)
-	x$sample[g] = samples$sample[i]
+	for (s in which(samples$event=="Amazon2008" | samples$event=="Amazon2011")){	
+		# search for "Gómez" in the labels
+		l0 = grepl("G\u00F3mez", x$label)
+		
+		# search for this trap (e.g. "Malaise 2") in the labels
+		l1 = grepl(samples$trap_2008_2011[s], x$label, ignore.case=T)
+		
+		# search for this end date (e.g. "2008-06-05") in the labels
+		l2 = grepl(samples$date_end[s], x$date_end, ignore.case=T)
+		
+		# only get labels that match all the above
+		l = which(l0 & l1 & l2)
+		
+		# save to 'x' in standard format (e.g. "la2-2")
+		x$sample[l] = samples$sample[s]
+	}
 	
 	# get Ugandan samples from the labels
 	for (s in which(samples$event=="Uganda2014")){	

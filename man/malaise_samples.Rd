@@ -13,11 +13,12 @@ A data frame with 1519 rows (one row for each sample) and 11 variables:
 \item{sample_number}{Latter half of the sample ID, telling which of the trap's samples this is}
 \item{date_begin}{When the Malaise sample started to be collected. Finnish date format \emph{day.month.year}.}
 \item{date_end}{When the Malaise sample stopped being collected. Finnish date format \emph{day.month.year}.}
-\item{sample_1998_2000}{How the sample ID is typically written on labels related to the Amazon 1998 and Amazon 2000 Malaise trapping.}
 \item{MYDatasetID[0]}{Dataset identifier used by the Kotka. This dataset gives the collecting event.}
 \item{MYDatasetID[1]}{Dataset identifier used by the Kotka. This dataset gives the forest type.}
 \item{MYDatasetID[2]}{Dataset identifier used by the Kotka. This dataset gives the trap.}
 \item{MYDatasetID[3]}{Dataset identifier used by the Kotka. This dataset marks any damaged samples.}
+\item{sample_1998_2000}{How the sample ID is typically written on labels related to the Amazon 1998 and Amazon 2000 Malaise trapping.}
+\item{trap_2008_2011}{How the trap is typically written on labels related to the Amazon 2008 and Amazon 2011 Malaise trapping.}
 }
 }
 \usage{
