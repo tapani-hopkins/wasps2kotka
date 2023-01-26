@@ -29,5 +29,5 @@ lab = c(
 x = get_labeldata(lab, verify=TRUE)
 }
 \seealso{
-\code{\link[=verify_data]{verify_data()}} which checks the results, \code{\link[=make_kotkaupload]{make_kotkaupload()}} which creates a Kotka upload file out of the returned data frame.
+\code{\link[=verify_data]{verify_data()}} which checks the results, \code{\link[=make_upload]{make_upload()}} which creates a Kotka upload file out of the returned data frame.
 }

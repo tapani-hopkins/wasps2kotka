@@ -15,8 +15,8 @@ add_ecuadordata(k, x)
 The data frame containing the Kotka upload (\code{k}) with Ecuadorian data added.
 }
 \description{
-This is a helper function used by \code{\link[=make_kotkaupload]{make_kotkaupload()}}. Adds basic Ecuadorian data to a Kotka upload. Recognises Ecuadorian wasps by looking at the labels.
+This is a helper function used by \code{\link[=make_upload]{make_upload()}}. Adds basic Ecuadorian data to a Kotka upload. Recognises Ecuadorian wasps by looking at the labels.
 }
 \seealso{
-\code{\link[=make_kotkaupload]{make_kotkaupload()}}
+\code{\link[=make_upload]{make_upload()}}
 }

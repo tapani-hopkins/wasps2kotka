@@ -1,7 +1,7 @@
 #' @details 
 #' Typical usage is one of the following:
-#' * Get data from wasp labels with [get_labeldata()], then use [make_kotkaupload()] to create an upload file for the wasps.  
-#' * Write down the sample which wasps came from, and create an upload file for the wasps with [make_kotkaupload()]. 
+#' * Get data from wasp labels with [get_labeldata()], then use [make_upload()] to create an upload file for the wasps.  
+#' * Write down the sample which wasps came from, and create an upload file for the wasps with [make_upload()]. 
 #' 
 #' Before using, you will need to load the label texts or sample identifiers to R. Typically this will be by reading a text file, or a csv file you've exported from Excel.  
 #' 
@@ -25,7 +25,7 @@
 #' x$missing_problem
 #' 
 #' # create a Kotka upload file for these wasps (but do not save it)
-#' upload = make_kotkaupload(x, verify=FALSE, write.csv=FALSE)
+#' upload = make_upload(x, verify=FALSE, write.csv=FALSE)
 #' upload
 #' @keywords internal
 "_PACKAGE"

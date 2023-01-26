@@ -34,7 +34,7 @@ library(wasps2kotka)
 
 # get data from the labels, verify it and create upload
 x = get_labeldata(example_labels)
-make_kotkaupload(x)
+make_upload(x)
 ```
 
 ### More detailed usage
@@ -63,7 +63,7 @@ To get this done, simply load the labels to R. You can e.g. save them in Excel, 
 labels = read.csv("/path/to/labelfile.csv", as.is=TRUE)[, 1]
 ```
 
-Once the labels are in R, all you need to do is get the data from them (`get_labeldata`), and create the Kotka upload file(`make_kotkaupload`):
+Once the labels are in R, all you need to do is get the data from them (`get_labeldata`), and create the Kotka upload file(`make_upload`):
 
 ``` r
 # example labels
@@ -84,7 +84,7 @@ x$missing_problem
 x$sample_problem
 
 # create a Kotka upload file for these wasps
-make_kotkaupload(x)
+make_upload(x)
 ```
 
 This results in a file (kotka_upload.csv) with all the data on the wasps in the format expected by Kotka. 

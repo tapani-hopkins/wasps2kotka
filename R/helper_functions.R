@@ -24,14 +24,14 @@ add = function(x, what=""){
 
 #' Add Ecuadorian data to Kotka upload
 #'
-#' This is a helper function used by [make_kotkaupload()]. Adds basic Ecuadorian data to a Kotka upload. Recognises Ecuadorian wasps by looking at the labels.
+#' This is a helper function used by [make_upload()]. Adds basic Ecuadorian data to a Kotka upload. Recognises Ecuadorian wasps by looking at the labels.
 #'
 #' @param k A data frame containing the Kotka upload. 
 #' @param x A data frame containing the user input. If there is no column "label", this function does nothing.
 #'
 #' @return The data frame containing the Kotka upload (`k`) with Ecuadorian data added.
 #'
-#' @seealso [make_kotkaupload()]
+#' @seealso [make_upload()]
 add_ecuadordata = function(k, x){
 	
 	# do nothing if there is no column "label"
@@ -66,7 +66,7 @@ add_ecuadordata = function(k, x){
 
 #' Add user-input data to Kotka upload
 #'
-#' This is a helper function used by [make_kotkaupload()]. Adds data columns input by the user to a Kotka upload. Ignores column "sample", tries to find the right Kotka column for everything else.
+#' This is a helper function used by [make_upload()]. Adds data columns input by the user to a Kotka upload. Ignores column "sample", tries to find the right Kotka column for everything else.
 #'
 #' Any columns that can't be matched to a Kotka column are ignored.
 #' 
@@ -75,7 +75,7 @@ add_ecuadordata = function(k, x){
 #'
 #' @return The data frame containing the Kotka upload (`k`) with user input added to the matching columns.
 #'
-#' @seealso [make_kotkaupload()]
+#' @seealso [make_upload()]
 add_inputdata = function(k, x){
 	
 	# get data frame which tells what user input matches what Kotka column
@@ -112,14 +112,14 @@ add_inputdata = function(k, x){
 
 #' Add Peruvian and Ugandan data to Kotka upload
 #'
-#' This is a helper function used by [make_kotkaupload()]. Adds data on Peruvian and Ugandan wasps caught by Malaise trapping to a Kotka upload. Adds basic data from a template file, and sample data by matching each wasp's sample ID with the sample it came from. 
+#' This is a helper function used by [make_upload()]. Adds data on Peruvian and Ugandan wasps caught by Malaise trapping to a Kotka upload. Adds basic data from a template file, and sample data by matching each wasp's sample ID with the sample it came from. 
 #'
 #' @param k A data frame containing the Kotka upload. 
 #' @param x A data frame containing the user input. If there is no column "sample", this function does nothing.
 #'
 #' @return The data frame containing the Kotka upload (`k`) with Peruvian and Ugandan data added.
 #'
-#' @seealso [make_kotkaupload()], and [read()] which is used by this function
+#' @seealso [make_upload()], and [read()] which is used by this function
 add_malaisedata = function(k, x){
 	
 	# do nothing if there is no column "sample" in the input data
@@ -321,17 +321,17 @@ read = function(file, nheaders=2, ...){
 
 #' Verify specimen data
 #'
-#' This is a helper function used by [make_kotkaupload()] and [get_labeldata()]. Checks that the data they are handling looks right, and highlights any problems.
+#' This is a helper function used by [make_upload()] and [get_labeldata()]. Checks that the data they are handling looks right, and highlights any problems.
 #'
 #' Any problems, such as sample dates not matching dates on the label, will be added to separate column(s) to the data. 
 #'
-#' @param x A data frame, e.g. that created by [get_labeldata()] or received by [make_kotkaupload()]. Must include column "sample".
+#' @param x A data frame, e.g. that created by [get_labeldata()] or received by [make_upload()]. Must include column "sample".
 #' @param check_missing A Boolean stating whether to check for missing data. Typically TRUE to check that everything was succesfully extracted from labels.
 #' @param check_sample A Boolean stating whether to check that the samples exist and their data matches the other columns in `x`.
 #'
 #' @return The input data frame with extra columns "missing_problem" (if check_missing is TRUE) and "sample_problem" (if check_sample is TRUE). 
 #'
-#' @seealso [get_labeldata()] whose data this function checks, [make_kotkaupload()] which creates a Kotka upload file out of the returned data frame.
+#' @seealso [get_labeldata()] whose data this function checks, [make_upload()] which creates a Kotka upload file out of the returned data frame.
 verify_data = function(x, check_missing=TRUE, check_sample=TRUE){
 	
 	# load the sample list, convert dates to date object
@@ -340,7 +340,7 @@ verify_data = function(x, check_missing=TRUE, check_sample=TRUE){
 	samples$date_end = as.Date(samples$date_end, format="%d.%m.%Y")
 		
 	# check which samples exist (=not NA, missing or a mistype)
-	sample_exists = x$sample %in% samples$sample
+	sample_exists = toupper(x$sample) %in% toupper(samples$sample)
 	
 	# check for missing data
 	if (check_missing){
@@ -389,7 +389,7 @@ verify_data = function(x, check_missing=TRUE, check_sample=TRUE){
 			
 			# get the valid samples in 'x' and what row they match in the sample list 
 			i = sample_exists & !is.na(x$date_begin) & !is.na(x$date_end)
-			s = match(x$sample[i], samples$sample)
+			s = match(toupper(x$sample[i]), toupper(samples$sample))
 			
 			# find specimens whose sample collecting dates don't match user input dates
 			mmb = which(x$date_begin[i] != samples$date_begin[s])

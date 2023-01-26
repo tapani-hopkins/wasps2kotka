@@ -11,8 +11,8 @@ Functions for use at the Zoological Museum of the University of Turku. Mainly us
 \details{
 Typical usage is one of the following:
 \itemize{
-\item Get data from wasp labels with \code{\link[=get_labeldata]{get_labeldata()}}, then use \code{\link[=make_kotkaupload]{make_kotkaupload()}} to create an upload file for the wasps.
-\item Write down the sample which wasps came from, and create an upload file for the wasps with \code{\link[=make_kotkaupload]{make_kotkaupload()}}.
+\item Get data from wasp labels with \code{\link[=get_labeldata]{get_labeldata()}}, then use \code{\link[=make_upload]{make_upload()}} to create an upload file for the wasps.
+\item Write down the sample which wasps came from, and create an upload file for the wasps with \code{\link[=make_upload]{make_upload()}}.
 }
 
 Before using, you will need to load the label texts or sample identifiers to R. Typically this will be by reading a text file, or a csv file you've exported from Excel.
@@ -37,7 +37,7 @@ x$sample_problem
 x$missing_problem
 
 # create a Kotka upload file for these wasps (but do not save it)
-upload = make_kotkaupload(x, verify=FALSE, write.csv=FALSE)
+upload = make_upload(x, verify=FALSE, write.csv=FALSE)
 upload
 }
 \seealso{

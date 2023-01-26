@@ -8,7 +8,7 @@
 #' @return A data frame with the labels and the data extracted from them. If verify=TRUE, also has columns `missing_problem` and `sample_problem` giving info on any problems detected.
 #' @export
 #'
-#' @seealso [verify_data()] which checks the results, [make_kotkaupload()] which creates a Kotka upload file out of the returned data frame.
+#' @seealso [verify_data()] which checks the results, [make_upload()] which creates a Kotka upload file out of the returned data frame.
 #' 
 #' @examples
 #' lab = c(  

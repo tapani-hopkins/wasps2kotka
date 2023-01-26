@@ -15,11 +15,11 @@ add_inputdata(k, x)
 The data frame containing the Kotka upload (\code{k}) with user input added to the matching columns.
 }
 \description{
-This is a helper function used by \code{\link[=make_kotkaupload]{make_kotkaupload()}}. Adds data columns input by the user to a Kotka upload. Ignores column "sample", tries to find the right Kotka column for everything else.
+This is a helper function used by \code{\link[=make_upload]{make_upload()}}. Adds data columns input by the user to a Kotka upload. Ignores column "sample", tries to find the right Kotka column for everything else.
 }
 \details{
 Any columns that can't be matched to a Kotka column are ignored.
 }
 \seealso{
-\code{\link[=make_kotkaupload]{make_kotkaupload()}}
+\code{\link[=make_upload]{make_upload()}}
 }

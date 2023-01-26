@@ -32,13 +32,16 @@
 #' "PERU 1.-16.12.2000 wrong date for I1/17", 
 #' "cct1-141023 non-existent sample")
 #' x = get_labeldata(lab)
-#' upload = make_kotkaupload(x, write.csv=FALSE)
-make_kotkaupload = function(x, verify=TRUE, write.csv=TRUE){
+#' upload = make_upload(x, write.csv=FALSE)
+make_upload = function(x, verify=TRUE, write.csv=TRUE){
 	
 	# if 'x' is a vector instead of a data frame, assume it contains samples
 	if(is.vector(x)){
 		x = data.frame(sample=x)
 	}
+	
+	# convert samples to upper case
+	
 	
 	# verify input data
 	if (verify){

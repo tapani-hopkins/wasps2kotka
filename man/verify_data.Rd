@@ -7,7 +7,7 @@
 verify_data(x, check_missing = TRUE, check_sample = TRUE)
 }
 \arguments{
-\item{x}{A data frame, e.g. that created by \code{\link[=get_labeldata]{get_labeldata()}} or received by \code{\link[=make_kotkaupload]{make_kotkaupload()}}. Must include column "sample".}
+\item{x}{A data frame, e.g. that created by \code{\link[=get_labeldata]{get_labeldata()}} or received by \code{\link[=make_upload]{make_upload()}}. Must include column "sample".}
 
 \item{check_missing}{A Boolean stating whether to check for missing data. Typically TRUE to check that everything was succesfully extracted from labels.}
 
@@ -17,11 +17,11 @@ verify_data(x, check_missing = TRUE, check_sample = TRUE)
 The input data frame with extra columns "missing_problem" (if check_missing is TRUE) and "sample_problem" (if check_sample is TRUE).
 }
 \description{
-This is a helper function used by \code{\link[=make_kotkaupload]{make_kotkaupload()}} and \code{\link[=get_labeldata]{get_labeldata()}}. Checks that the data they are handling looks right, and highlights any problems.
+This is a helper function used by \code{\link[=make_upload]{make_upload()}} and \code{\link[=get_labeldata]{get_labeldata()}}. Checks that the data they are handling looks right, and highlights any problems.
 }
 \details{
 Any problems, such as sample dates not matching dates on the label, will be added to separate column(s) to the data.
 }
 \seealso{
-\code{\link[=get_labeldata]{get_labeldata()}} whose data this function checks, \code{\link[=make_kotkaupload]{make_kotkaupload()}} which creates a Kotka upload file out of the returned data frame.
+\code{\link[=get_labeldata]{get_labeldata()}} whose data this function checks, \code{\link[=make_upload]{make_upload()}} which creates a Kotka upload file out of the returned data frame.
 }
