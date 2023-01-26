@@ -40,8 +40,8 @@ make_upload = function(x, verify=TRUE, write.csv=TRUE){
 		x = data.frame(sample=x)
 	}
 	
-	# convert samples to upper case
-	
+	# convert samples to upper case to make sure they compare properly
+	x$sample = toupper(x$sample)
 	
 	# verify input data
 	if (verify){

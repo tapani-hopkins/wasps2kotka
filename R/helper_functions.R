@@ -129,6 +129,11 @@ add_malaisedata = function(k, x){
 		# (in two files: Kotka format, and overview file)
 		samples = wasps2kotka::malaise_samples_kotka_format
 		samples2 = wasps2kotka::malaise_samples
+		
+		# convert samples to upper case, to make sure they compare OK
+		samples$"MYOriginalSpecimenID" = toupper(samples$"MYOriginalSpecimenID")
+		samples2$sample = toupper(samples2$sample)
+		x$sample = toupper(x$sample)
 	
 		# overwrite the datasets with those of the overview file
 		# (the Kotka data contains irrelevant datasets)
@@ -152,7 +157,7 @@ add_malaisedata = function(k, x){
 		i = which(x$sample %in% samples2$sample)
 	
 		# get the index of the corresponding samples
-		s = match(tolower(x$sample[i]), tolower(samples$"MYOriginalSpecimenID"))	
+		s = match(x$sample[i], samples$"MYOriginalSpecimenID")	
 	
 		# copy the default data (shared by all samples) from the Kotka template to 'k'
 		cols = which(kotka_template[1, ] != "")
@@ -338,9 +343,13 @@ verify_data = function(x, check_missing=TRUE, check_sample=TRUE){
 	samples = wasps2kotka::malaise_samples
 	samples$date_begin = as.Date(samples$date_begin, format="%d.%m.%Y")
 	samples$date_end = as.Date(samples$date_end, format="%d.%m.%Y")
+	
+	# convert samples to upper case, to make sure they compare ok
+	x$sample = toupper(x$sample)
+	samples$sample = toupper(samples$sample)
 		
 	# check which samples exist (=not NA, missing or a mistype)
-	sample_exists = toupper(x$sample) %in% toupper(samples$sample)
+	sample_exists = x$sample %in% samples$sample
 	
 	# check for missing data
 	if (check_missing){
@@ -389,7 +398,7 @@ verify_data = function(x, check_missing=TRUE, check_sample=TRUE){
 			
 			# get the valid samples in 'x' and what row they match in the sample list 
 			i = sample_exists & !is.na(x$date_begin) & !is.na(x$date_end)
-			s = match(toupper(x$sample[i]), toupper(samples$sample))
+			s = match(x$sample[i], samples$sample)
 			
 			# find specimens whose sample collecting dates don't match user input dates
 			mmb = which(x$date_begin[i] != samples$date_begin[s])
