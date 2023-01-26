@@ -1,0 +1,6 @@
+input,kotka
+box,MYDocumentLocation
+date_begin,MYGathering[0][MYDateBegin]
+date_end,MYGathering[0][MYDateEnd]
+label,MYLabelsVerbatim
+sex,MYGathering[0][MYUnit][0][MYSex]

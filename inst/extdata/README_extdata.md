@@ -2,7 +2,14 @@
 
 Folder "extdata" contains template for creating a Kotka upload from the extracted data. Modifying these changes what the script does.
 
-The data is added to the Kotka upload in the order: kotka_template -> kotka_template_Ecuador -> kotka_template_malaise -> Malaise sample data. If the same data is given by several templates, the later ones overwrite the earlier ones. 
+The data is added to the Kotka upload in the order: kotka_template -> user input -> kotka_template_Ecuador -> kotka_template_malaise -> Malaise sample data. If the same data is given by several templates, the later ones overwrite the earlier ones. 
+
+Strictly speaking, *input_field_kotka_equivalents.csv* is not a template. It's used to place user-input data in the correct column in Kotka. This data could e.g. be the sex of a wasp which was mentioned on the label.
+
+
+## input_field_kotka_equivalents.csv
+
+What some fields input by the user are called in Kotka. E.g. if the user inputs a column called "sex", the equivalent column in the Kotka data is "MYGathering[0][MYUnit][0][MYSex]". Used by the script to add user-input data to the upload. If changing these, update the documentation for function *verify_data()*. 
 
 
 ## kotka_desired_malaise_sample_columns.csv

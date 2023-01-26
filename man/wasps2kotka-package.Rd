@@ -4,33 +4,40 @@
 \name{wasps2kotka-package}
 \alias{wasps2kotka}
 \alias{wasps2kotka-package}
-\title{wasps2kotka: Get wasp data from labels and upload to the Kotka database}
+\title{wasps2kotka: Get wasp data from labels or sample identifiers, and upload to the Kotka database}
 \description{
 Functions for use at the Zoological Museum of the University of Turku. Mainly used to get data from wasp labels or from wasp sample IDs, and then create a csv file for uploading the data to the Kotka database. Works with the really large wasp collections at Turku: wasps collected by Malaise trapping in Peru and Uganda, and wasps collected by canopy fogging in Ecuador.
 }
 \details{
-Typical usage is to get data from labels with \code{\link[=get_labeldata]{get_labeldata()}}, verify the extracted data with \code{\link[=verify_labeldata]{verify_labeldata()}}, then use \code{\link[=make_kotkaupload]{make_kotkaupload()}} to create an upload file.
+Typical usage is one of the following:
+\itemize{
+\item Get data from wasp labels with \code{\link[=get_labeldata]{get_labeldata()}}, then use \code{\link[=make_kotkaupload]{make_kotkaupload()}} to create an upload file for the wasps.
+\item Write down the sample which wasps came from, and create an upload file for the wasps with \code{\link[=make_kotkaupload]{make_kotkaupload()}}.
+}
 
-Before using, you will need to load the labels texts to R. Typically this will be by reading a text file, or a csv file you've exported from Excel.
+Before using, you will need to load the label texts or sample identifiers to R. Typically this will be by reading a text file, or a csv file you've exported from Excel.
 
-After you've got the upload file, you'll need to add any missing fields and remove extra columns. The extra columns show if any problems occurred, but are not accepted by Kotka.
+After you've got the upload file, you'll need to add any missing fields. It is also worth checking if any problems occurred: the script highlights any incorrect sample identifiers, missing data for labels etc.
 }
 \examples{
 # example labels
 labels = c(  
 "cct1-141022",  
 "PERU, Allpahuayo 1.-15.12.2000, Sääksjärvi I.E I1/17",  
-"ECUADOR, Tiputini, 22. Oct 1998, Canopy fogging Lot# 1966 Meniscomorpha sp. 2"  
+"ECUADOR, Tiputini, 22. Oct 1998, Canopy fogging Lot# 1966 Meniscomorpha sp. 2",  
+"cct1-141023 incorrect sample ID",  
+"PERU, Allpahuayo 3.-16.12.2000, dates are wrong, Sääksjärvi I.E I1/17"
 )
 
 # get data from the labels
-x = get_labeldata(labels)
+x = get_labeldata(labels, verify=TRUE)
 
-# check the extracted data (optional but strongly recommended!)
-x = verify_labeldata(x)
+# check for problems
+x$sample_problem
+x$missing_problem
 
 # create a Kotka upload file for these wasps (but do not save it)
-upload = make_kotkaupload(x, write.csv=FALSE)
+upload = make_kotkaupload(x, verify=FALSE, write.csv=FALSE)
 upload
 }
 \seealso{

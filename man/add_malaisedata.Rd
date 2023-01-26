@@ -9,13 +9,13 @@ add_malaisedata(k, x)
 \arguments{
 \item{k}{A data frame containing the Kotka upload.}
 
-\item{x}{A data frame returned by \code{\link[=get_labeldata]{get_labeldata()}} or \code{\link[=verify_labeldata]{verify_labeldata()}}.}
+\item{x}{A data frame containing the user input. If there is no column "sample", this function does nothing.}
 }
 \value{
 The data frame containing the Kotka upload (\code{k}) with Peruvian and Ugandan data added.
 }
 \description{
-This is a helper function used by \code{\link[=make_kotkaupload]{make_kotkaupload()}}. Add data on Peruvian and Ugandan wasps caught by Malaise trapping to a Kotka upload. Add basic data from a template file, and sample data by matching each wasp's sample ID with the sample it came from.
+This is a helper function used by \code{\link[=make_kotkaupload]{make_kotkaupload()}}. Adds data on Peruvian and Ugandan wasps caught by Malaise trapping to a Kotka upload. Adds basic data from a template file, and sample data by matching each wasp's sample ID with the sample it came from.
 }
 \seealso{
 \code{\link[=make_kotkaupload]{make_kotkaupload()}}, and \code{\link[=read]{read()}} which is used by this function

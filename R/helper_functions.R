@@ -1,64 +1,109 @@
-#' Add any problems to the problem list
+#' Add problem messages to a vector
 #'
-#' This is a helper function used by [verify_labeldata()]. Add any problem messages of a wasp label to the list of problems.  
+#' This is a helper function used by [verify_data()]. Adds any problem messages of a wasp label to a character vector, so that new problem messages go on a new line.  
 #'
-#' @param problems A list of character vectors, with one list item per label. Each vector item is a separate problem.
-#' @param add The string to be added to the each vector in the list. This will be some kind of message detailing the problem.
+#' @param x Character vector of existing problem messages.
+#' @param what Character string detailing the problem. Added to every item of `x`.
 #'
-#' @return The input list (`problems`) with the message added to each list item. 
+#' @return The input vector (`x`) with the message added to each item. 
 #'
-#' @seealso [verify_labeldata()]
-add = function(problems, add=""){
-	# Adds any problems to the problem list
-	# Helper function for 'verify_labeldata'.
-	# Returns the problem list with problem text added to each list item
-	#  problems  list of character vectors, each vector item a separate problem
-	#  add  the text to add to each item of the list, stating what the problem is
+#' @seealso [verify_data()]
+add = function(x, what=""){
 	
-	# add problem text to the list
-	problems = lapply(problems, c, add)
+	# check which items of x are blank
+	i = is.na(x) | x == ""
+	
+	# add the problem message as is to blank items, but on a new line if there's already text there
+	x[i] = what
+	x[!i] = paste0(x[!i], "\n", what)
 	
 	# return
-	return(problems)
+	return(x)
 }
 
 
 #' Add Ecuadorian data to Kotka upload
 #'
-#' This is a helper function used by [make_kotkaupload()]. Add basic Ecuadorian data to a Kotka upload.  
+#' This is a helper function used by [make_kotkaupload()]. Adds basic Ecuadorian data to a Kotka upload. Recognises Ecuadorian wasps by looking at the labels.
 #'
 #' @param k A data frame containing the Kotka upload. 
-#' @param x A data frame returned by [get_labeldata()] or [verify_labeldata()].
+#' @param x A data frame containing the user input. If there is no column "label", this function does nothing.
 #'
 #' @return The data frame containing the Kotka upload (`k`) with Ecuadorian data added.
 #'
 #' @seealso [make_kotkaupload()]
 add_ecuadordata = function(k, x){
-	# Adds basic Ecuadorian data to a Kotka upload.
-	# Helper function for 'make_kotkaupload'.
-	# Returns the Kotka upload with Ecuadorian data added.
-	#  k  data frame in Kotka upload format
-	#  x  data frame returned by 'get_labeldata'
 	
-	# load Kotka template for Ecuador data
-	f = system.file("extdata", "kotka_template_Ecuador.csv", package = "wasps2kotka", mustWork = TRUE)
-	kotka_template = utils::read.csv(f, row.names=1, colClasses = "character", check.names=F)
+	# do nothing if there is no column "label"
+	if ("label" %in% colnames(x)){	
 	
-	# find Ecuadorian Tiputini and Onkone Gare labels 
-	# (make sure they are canopy fogging)
-	fog = grepl("Canopy fog", x$label, ignore.case=T)
-	tip = grepl("Tiputini", x$label, ignore.case=T) & fog
-	onk = grepl("Onkone Gare", x$label, ignore.case=T) & fog
+		# load Kotka template for Ecuador data
+		f = system.file("extdata", "kotka_template_Ecuador.csv", package = "wasps2kotka", mustWork = TRUE)
+		kotka_template = utils::read.csv(f, row.names=1, colClasses = "character", check.names=F)
 	
-	# check which columns of the template contain data
-	i = which(kotka_template["tiputini", ] != "")
-	tipcols = names(kotka_template)[i]
-	i = which(kotka_template["onkone", ] != "")
-	onkcols = names(kotka_template)[i]
+		# find Ecuadorian Tiputini and Onkone Gare labels 
+		# (make sure they are canopy fogging)
+		fog = grepl("Canopy fog", x$label, ignore.case=T)
+		tip = grepl("Tiputini", x$label, ignore.case=T) & fog
+		onk = grepl("Onkone Gare", x$label, ignore.case=T) & fog
 	
-	# copy the Ecuadorian template data to 'k' 	
-	k[tip, tipcols] = kotka_template["tiputini", tipcols]
-	k[onk, onkcols] = kotka_template["onkone", onkcols]
+		# check which columns of the template contain data
+		i = which(kotka_template["tiputini", ] != "")
+		tipcols = names(kotka_template)[i]
+		i = which(kotka_template["onkone", ] != "")
+		onkcols = names(kotka_template)[i]
+	
+		# copy the Ecuadorian template data to 'k' 	
+		k[tip, tipcols] = kotka_template["tiputini", tipcols]
+		k[onk, onkcols] = kotka_template["onkone", onkcols]
+	
+	}
+	
+	# return
+	return(k)
+}
+
+
+#' Add user-input data to Kotka upload
+#'
+#' This is a helper function used by [make_kotkaupload()]. Adds data columns input by the user to a Kotka upload. Ignores column "sample", tries to find the right Kotka column for everything else.
+#'
+#' Any columns that can't be matched to a Kotka column are ignored.
+#' 
+#' @param k A data frame containing the Kotka upload. 
+#' @param x A data frame containing the user input.
+#'
+#' @return The data frame containing the Kotka upload (`k`) with user input added to the matching columns.
+#'
+#' @seealso [make_kotkaupload()]
+add_inputdata = function(k, x){
+	
+	# get data frame which tells what user input matches what Kotka column
+	f = system.file("extdata", "input_field_kotka_equivalents.csv", package = "wasps2kotka", mustWork = TRUE)
+	equivalents = utils::read.csv(f, colClasses = "character", check.names=F)
+	
+	# get all column names except for "sample"
+	cnames = colnames(x)
+	cnames = cnames[! cnames %in% c("sample")]
+	
+	# add the user input to 'k'
+	for (cname in cnames){
+		
+		# check this column has an equivalent in Kotka
+		if (cname %in% equivalents$input){
+			
+			# find out what this column is called in Kotka
+			kname = equivalents$kotka[equivalents$input == cname]
+		
+			# get rows that are not empty
+			i = which(! is.na(x[, cname]) & x[, cname] != "")
+		
+			# add the non-empty rows to the correct column in 'k'
+			k[i, kname] = as.character(x[i, cname])
+		
+		}
+				
+	}
 	
 	# return
 	return(k)
@@ -67,60 +112,61 @@ add_ecuadordata = function(k, x){
 
 #' Add Peruvian and Ugandan data to Kotka upload
 #'
-#' This is a helper function used by [make_kotkaupload()]. Add data on Peruvian and Ugandan wasps caught by Malaise trapping to a Kotka upload. Add basic data from a template file, and sample data by matching each wasp's sample ID with the sample it came from. 
+#' This is a helper function used by [make_kotkaupload()]. Adds data on Peruvian and Ugandan wasps caught by Malaise trapping to a Kotka upload. Adds basic data from a template file, and sample data by matching each wasp's sample ID with the sample it came from. 
 #'
 #' @param k A data frame containing the Kotka upload. 
-#' @param x A data frame returned by [get_labeldata()] or [verify_labeldata()].
+#' @param x A data frame containing the user input. If there is no column "sample", this function does nothing.
 #'
 #' @return The data frame containing the Kotka upload (`k`) with Peruvian and Ugandan data added.
 #'
 #' @seealso [make_kotkaupload()], and [read()] which is used by this function
 add_malaisedata = function(k, x){
-	# Adds data on the Peruvian and Ugandan Malaise samples to a Kotka upload
-	# Uses helper function 'read'.
-	# Used by 'make_kotkaupload'
-	# Returns the Kotka upload with Malaise sampling data added.
-	#  k  data frame in Kotka upload format
-	#  x  data frame returned by 'get_labeldata'
 	
-	# load the Malaise sample data
-	# (in two files: Kotka format, and overview file)
-	samples = wasps2kotka::malaise_samples_kotka_format
-	samples2 = wasps2kotka::malaise_samples
+	# do nothing if there is no column "sample" in the input data
+	if ("sample" %in% colnames(x)){
+		
+		# load the Malaise sample data
+		# (in two files: Kotka format, and overview file)
+		samples = wasps2kotka::malaise_samples_kotka_format
+		samples2 = wasps2kotka::malaise_samples
 	
-	# overwrite the datasets with those of the overview file
-	# (the Kotka data contains irrelevant datasets)
-	i = match(samples$"MYOriginalSpecimenID", samples2$sample)
-	samples2 = samples2[i, ]
-	dcols = c("MYDatasetID[0]", "MYDatasetID[1]", "MYDatasetID[2]", "MYDatasetID[3]")
-	samples[dcols] = samples2[dcols]
+		# overwrite the datasets with those of the overview file
+		# (the Kotka data contains irrelevant datasets)
+		i = match(samples$"MYOriginalSpecimenID", samples2$sample)
+		samples2 = samples2[i, ]
+		dcols = c("MYDatasetID[0]", "MYDatasetID[1]", "MYDatasetID[2]", "MYDatasetID[3]")
+		samples[dcols] = samples2[dcols]
 	
-	# load the columns of sample data which should be copied to the Kotka upload
-	# add the dataset columns
-	f = system.file("extdata", "kotka_desired_malaise_sample_columns.csv", package = "wasps2kotka", mustWork = TRUE)
-	what_cols = read(f, 0)[,1]
-	what_cols = c(what_cols, dcols)
+		# load the data frame that tells what columns of sample data should be copied to the Kotka upload
+		f = system.file("extdata", "kotka_desired_malaise_sample_columns.csv", package = "wasps2kotka", mustWork = TRUE)
+		what_cols = read(f, 0)[,1]
 	
-	# load Kotka template for Malaise data (=data shared by all samples)
-	f = system.file("extdata", "kotka_template_malaise.csv", package = "wasps2kotka", mustWork = TRUE)
-	kotka_template = read(f, 2)
+		# add the dataset columns
+		what_cols = c(what_cols, dcols)
 	
-	# find the specimens which are from Peruvian or Ugandan Malaise samples,
-	# and the index of the corresponding samples
-	malaise = !is.na(x$sample)
-	s = match(tolower(x$sample[malaise]), tolower(samples$"MYOriginalSpecimenID"))	
+		# load Kotka template for Malaise data (=data shared by all Malaise samples)
+		f = system.file("extdata", "kotka_template_malaise.csv", package = "wasps2kotka", mustWork = TRUE)
+		kotka_template = read(f, 2)
 	
-	# copy the default data (shared by all samples) from the Kotka template to 'k'
-	cols = which(kotka_template[1, ] != "")
-	k[malaise, cols] = kotka_template[, cols]
+		# find the specimens which are from Peruvian or Ugandan Malaise samples
+		i = which(x$sample %in% samples2$sample)
 	
-	# copy the sample data to 'k'
-	k[malaise, what_cols] = samples[s, what_cols]
+		# get the index of the corresponding samples
+		s = match(tolower(x$sample[i]), tolower(samples$"MYOriginalSpecimenID"))	
 	
-	# add the sample the specimen came from to 'k'
-	sampleID = samples$"MYObjectID"[s]
-	sampleID = paste0("http://mus.utu.fi/ZMUT.", sampleID)
-	k$"MYSeparatedFrom"[malaise] = sampleID
+		# copy the default data (shared by all samples) from the Kotka template to 'k'
+		cols = which(kotka_template[1, ] != "")
+		k[i, cols] = kotka_template[, cols]
+	
+		# copy the sample data to 'k'
+		k[i, what_cols] = samples[s, what_cols]
+	
+		# add the sample the specimen came from to 'k'
+		sampleID = samples$"MYObjectID"[s]
+		sampleID = paste0("http://mus.utu.fi/ZMUT.", sampleID)
+		k$"MYSeparatedFrom"[i] = sampleID
+	
+	}
 	
 	# return
 	return(k)
@@ -139,11 +185,6 @@ add_malaisedata = function(k, x){
 #'
 #' @seealso [get_dates()]
 get_d_begin = function(x, d_end){
-	# Gets the start date from dates of the Peruvian format (e.g. "1.-15.12.2000").
-	# Helper function for 'get_dates'
-	# Returns the start date as a Date object.
-	#  x  date as a string  (e.g. "1.-15.12.2000")
-	#  d_end  end date as a Date object (e.g. "2000-12-15"), this is used to get the month and year if need be.
 	
 	# get everything before the "-"
 	d_begin = getreg(".+-", x)
@@ -201,11 +242,6 @@ get_d_begin = function(x, d_end){
 #'
 #' @seealso [get_labeldata()], and [getreg()] and [get_d_begin()] which are used by this function
 get_dates = function(lab){
-	# Extract the dates from Peruvian or Ecuadorian museum labels.
-	# Uses helper functions 'getreg' and 'get_d_begin'.
-	# Used by function 'get_labeldata'.
-	# Returns the start and end dates as a data frame.	
-	#  lab  vector of label texts
 			
 	# get typical Peruvian dates from the labels as string
 	# e.g. "1.-15.12.2000"
@@ -247,10 +283,6 @@ get_dates = function(lab){
 #'
 #' @seealso [get_dates()], and [regexpr()] which this is largely a wrapper for
 getreg = function(reg, x){
-	# Gets the text that matches a regular expression
-	# Helper function for 'get_dates'
-	#  reg  regular expression as string or character vector
-	#  x  string or character vector to search with the regular expression
 	
 	# get index where the substring starts, and string length
 	i = regexpr(reg, x)
@@ -274,11 +306,6 @@ getreg = function(reg, x){
 #'
 #' @seealso [add_malaisedata()], and [utils::read.csv()] which this is a wrapper for
 read = function(file, nheaders=2, ...){
-	# Reads csv files
-	# Helper function for 'add_malaisedata'
-	# Returns the file as a data frame.
-	#  file  name of the file to be read
-	#  nheaders  Number of rows of header. First header row will be used, others discarded.
 	
 	# first read the column names from the first row
 	cnames = utils::read.csv(file, header=F, colClasses="character", check.names=F, nrows=1, ...)
@@ -288,5 +315,95 @@ read = function(file, nheaders=2, ...){
 	
 	# return
 	return(a)
+	
+}
+
+
+#' Verify specimen data
+#'
+#' This is a helper function used by [make_kotkaupload()] and [get_labeldata()]. Checks that the data they are handling looks right, and highlights any problems.
+#'
+#' Any problems, such as sample dates not matching dates on the label, will be added to separate column(s) to the data. 
+#'
+#' @param x A data frame, e.g. that created by [get_labeldata()] or received by [make_kotkaupload()]. Must include column "sample".
+#' @param check_missing A Boolean stating whether to check for missing data. Typically TRUE to check that everything was succesfully extracted from labels.
+#' @param check_sample A Boolean stating whether to check that the samples exist and their data matches the other columns in `x`.
+#'
+#' @return The input data frame with extra columns "missing_problem" (if check_missing is TRUE) and "sample_problem" (if check_sample is TRUE). 
+#'
+#' @seealso [get_labeldata()] whose data this function checks, [make_kotkaupload()] which creates a Kotka upload file out of the returned data frame.
+verify_data = function(x, check_missing=TRUE, check_sample=TRUE){
+	
+	# load the sample list, convert dates to date object
+	samples = wasps2kotka::malaise_samples
+	samples$date_begin = as.Date(samples$date_begin, format="%d.%m.%Y")
+	samples$date_end = as.Date(samples$date_end, format="%d.%m.%Y")
+		
+	# check which samples exist (=not NA, missing or a mistype)
+	sample_exists = x$sample %in% samples$sample
+	
+	# check for missing data
+	if (check_missing){
+		
+		# create a column for messages about missing data
+		x$missing_problem = ""
+		
+		# check which cells have no data
+		empty = is.na(x)
+		
+		# examine one row at a time, write messages about missing data
+		for (i in 1:nrow(empty)){
+			
+			# save the column names that lack data (on this row)
+			missing_cols = colnames(empty)[empty[i,]]
+			
+			# ignore missing end dates
+			missing_cols = missing_cols[! missing_cols %in% c("date_end")]
+			
+			# ignore missing begin and end dates if the sample exists
+			if (sample_exists[i]){
+				missing_cols = missing_cols[! missing_cols %in% c("date_begin", "date_end")]
+			}
+			
+			# add a message saying what columns have no data
+			if (length(missing_cols) > 0){
+				x$missing_problem[i] = paste("Missing", paste(missing_cols, collapse=", "))
+			}
+			
+		}
+			
+	}
+	
+	# check that the samples exist and their data is consistent with the input data
+	if (check_sample){
+		
+		# create a column for messages about problems
+		x$sample_problem = ""
+		
+		# find samples which do not exist (typically these are mistyped sample IDs)
+		i = which(! sample_exists & ! is.na(x$sample))
+		x$sample_problem[i] = add(x$sample_problem[i], "Sample does not exist.")		
+		
+		# find samples whose collecting dates do not match columns "date_begin" and "date_end"
+		if (all(c("date_begin", "date_end") %in% colnames(x))){
+			
+			# get the valid samples in 'x' and what row they match in the sample list 
+			i = sample_exists & !is.na(x$date_begin) & !is.na(x$date_end)
+			s = match(x$sample[i], samples$sample)
+			
+			# find specimens whose sample collecting dates don't match user input dates
+			mmb = which(x$date_begin[i] != samples$date_begin[s])
+			mme = which(x$date_end[i] != samples$date_end[s])
+			
+			# add to column 'sample_problem'
+			x$sample_problem[i][mmb] = add(x$sample_problem[i][mmb], "Given start date does not match sample's start date.")
+			x$sample_problem[i][mme] = add(x$sample_problem[i][mme], "Given end date does not match sample's end date.")
+			
+		}
+		
+	}
+	
+	# return
+	return(x)
 	
 }

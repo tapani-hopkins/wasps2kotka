@@ -4,26 +4,30 @@
 \alias{get_labeldata}
 \title{Extract data from wasp labels}
 \usage{
-get_labeldata(lab)
+get_labeldata(lab, verify = TRUE)
 }
 \arguments{
 \item{lab}{A character vector of label texts.}
+
+\item{verify}{A boolean (TRUE / FALSE) stating whether to check the results. E.g. check that the dates on the label match the dates when the sample was collected, and that no data is missing.}
 }
 \value{
-A data frame with the labels and the data extracted from them.
+A data frame with the labels and the data extracted from them. If verify=TRUE, also has columns \code{missing_problem} and \code{sample_problem} giving info on any problems detected.
 }
 \description{
 Extract dates, sample ID and other data from the wasp labels typically found at the museum. Handles wasp labels from the Malaise trapping in Peru (1998-2011), and from the canopy fogging in Ecuador. Can also recognise sample IDs from the Malaise trapping in Uganda (2014-2015). The resulting data frame can be used as is, or as the basis for creating a Kotka upload.
 }
 \examples{
 lab = c(  
-"cct1-141022",  
+"cct1-141022",
+"cct1-141023",  
 "h1/1",  
-"PERU, Allpahuayo 1.-15.12.2000, Sääksjärvi I.E I1/17",  
+"PERU, Allpahuayo 1.-15.12.2000, Sääksjärvi I.E I1/17",
+"PERU 1.-16.12.2000 I1/17",  
 "ECUADOR, Tiputini, 22. Oct 1998, Canopy fogging Lot# 1966 Meniscomorpha sp. 2"  
 )
-x = get_labeldata(lab)
+x = get_labeldata(lab, verify=TRUE)
 }
 \seealso{
-\code{\link[=verify_labeldata]{verify_labeldata()}} which checks the results, \code{\link[=make_kotkaupload]{make_kotkaupload()}} which creates a Kotka upload file out of the returned (and optionally verified) data frame.
+\code{\link[=verify_data]{verify_data()}} which checks the results, \code{\link[=make_kotkaupload]{make_kotkaupload()}} which creates a Kotka upload file out of the returned data frame.
 }

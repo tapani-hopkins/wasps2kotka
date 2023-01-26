@@ -3,25 +3,24 @@
 #' Extract dates, sample ID and other data from the wasp labels typically found at the museum. Handles wasp labels from the Malaise trapping in Peru (1998-2011), and from the canopy fogging in Ecuador. Can also recognise sample IDs from the Malaise trapping in Uganda (2014-2015). The resulting data frame can be used as is, or as the basis for creating a Kotka upload.
 #'
 #' @param lab A character vector of label texts.
+#' @param verify A boolean (TRUE / FALSE) stating whether to check the results. E.g. check that the dates on the label match the dates when the sample was collected, and that no data is missing.
 #'
-#' @return A data frame with the labels and the data extracted from them. 
+#' @return A data frame with the labels and the data extracted from them. If verify=TRUE, also has columns `missing_problem` and `sample_problem` giving info on any problems detected.
 #' @export
 #'
-#' @seealso [verify_labeldata()] which checks the results, [make_kotkaupload()] which creates a Kotka upload file out of the returned (and optionally verified) data frame.
+#' @seealso [verify_data()] which checks the results, [make_kotkaupload()] which creates a Kotka upload file out of the returned data frame.
 #' 
 #' @examples
 #' lab = c(  
-#' "cct1-141022",  
+#' "cct1-141022",
+#' "cct1-141023",  
 #' "h1/1",  
-#' "PERU, Allpahuayo 1.-15.12.2000, Sääksjärvi I.E I1/17",  
+#' "PERU, Allpahuayo 1.-15.12.2000, Sääksjärvi I.E I1/17",
+#' "PERU 1.-16.12.2000 I1/17",  
 #' "ECUADOR, Tiputini, 22. Oct 1998, Canopy fogging Lot# 1966 Meniscomorpha sp. 2"  
 #' )
-#' x = get_labeldata(lab)
-get_labeldata = function(lab){
-	# Extracts dates, sample and other data from wasp labels.
-	# Uses function 'get_dates'.
-	# Returns the labels and corresponding data as a data frame.
-	#  lab  vector of label texts
+#' x = get_labeldata(lab, verify=TRUE)
+get_labeldata = function(lab, verify=TRUE){
 	
 	# create a data frame for the labels and corresponding data
 	x = data.frame(label=lab, sample=NA, sex=NA)
@@ -78,6 +77,11 @@ get_labeldata = function(lab){
 		
 		# save to 'x'
 		x$sample[l] = samples$sample[s]
+	}
+	
+	# verify the data if asked to do so
+	if (verify){
+		x = verify_data(x)
 	}
 	
 	# return the labels and corresponding data

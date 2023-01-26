@@ -2,4 +2,3 @@
 
 export(get_labeldata)
 export(make_kotkaupload)
-export(verify_labeldata)

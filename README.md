@@ -5,9 +5,11 @@ R package for use at the [Zoological Museum of the University of Turku](https://
 - wasps collected by Malaise trapping in [Uganda 2014-2015](https://doi.org/10.5281/zenodo.2225643)
 - wasps collected by canopy fogging in Ecuador
 
-Takes the text of the wasp labels (Peru and Ecuador) or the sample IDs of the wasps (Uganda). Then extracts data from the labels and creates a csv file for uploading the data to [Kotka](https://wiki.helsinki.fi/display/digit/Manual+for+Kotka). For the Peruvian and Ugandan wasps, data on the Malaise trapping is also included. 
+Takes the text of wasp labels, or the sample IDs of the wasps. Extracts data from the labels, and collects data on the sample. Then creates a csv file for uploading the data to [Kotka](https://wiki.helsinki.fi/display/digit/Manual+for+Kotka). 
 
 Typically used when faced with the daunting task of digitising thousands of tropical wasps, whose only information is on the labels. With this package, all you need to do is write down the label texts. The computer will do (almost) everything else to get the data to the [Kotka Collection Management System](https://wiki.helsinki.fi/display/digit/Manual+for+Kotka) and [FinBIF](https://laji.fi/en).
+
+Also used to quickly upload the data of recently pinned Ugandan wasps to the database. All that is needed are the sample IDs of each wasp, the computer does everything else.
 
 
 ## Installation
@@ -32,7 +34,6 @@ library(wasps2kotka)
 
 # get data from the labels, verify it and create upload
 x = get_labeldata(example_labels)
-x = verify_labeldata(x)
 make_kotkaupload(x)
 ```
 
@@ -62,7 +63,7 @@ To get this done, simply load the labels to R. You can e.g. save them in Excel, 
 labels = read.csv("/path/to/labelfile.csv", as.is=TRUE)[, 1]
 ```
 
-Once the labels are in R, all you need to do is get the data from them (`get_labeldata`), optionally verify the label data (`verify_labeldata`), and create the Kotka upload file(`make_kotkaupload`):
+Once the labels are in R, all you need to do is get the data from them (`get_labeldata`), and create the Kotka upload file(`make_kotkaupload`):
 
 ``` r
 # example labels
@@ -76,21 +77,19 @@ labels = c(
 library(wasps2kotka)
 
 # get data from the labels
-x = get_labeldata(labels)
+x = get_labeldata(labels, verify=TRUE)
 
 # check the extracted data (e.g. that no data is missing, dates look right..)
-x = verify_labeldata(x)
+x$missing_problem
+x$sample_problem
 
 # create a Kotka upload file for these wasps
 make_kotkaupload(x)
 ```
 
-This results in a file (kotka_upload.csv) with three sets of columns. In order from left to right:
-1. **problems**: One column, where any issues found by `verify_labeldata` will be listed.
-2. **label data**: All the data extracted from the labels, such as dates, sex, sample ID etc.
-3. **Kotka**: All the data on the wasps in the format expected by Kotka.
+This results in a file (kotka_upload.csv) with all the data on the wasps in the format expected by Kotka. 
 
-Before uploading to Kotka, open the file in e.g. Excel, and check any highlighted problems. You may also need to fill in some fields which the script does not currently handle, e.g. specimen ID, location and species name. 
+Before uploading to Kotka, open the file in e.g. Excel, and fill in any fields which are still missing. E.g. specimen ID and species name will typically need filling in. 
 
-Then delete the columns for problems and label data (they are clearly marked in the file), and upload to Kotka. 
+Then save and and upload the file to Kotka. 
 

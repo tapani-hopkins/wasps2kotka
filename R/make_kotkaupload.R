@@ -1,33 +1,64 @@
 #' Create a file for uploading wasp data to the Kotka database
 #'
-#' Create a Kotka upload file out of the data extracted from wasp labels (or obtained from sample IDs). Handles wasps from the Malaise trapping in Peru (1998-2011), and from the canopy fogging in Ecuador. Other specimens will be included in the upload, but will only have minimal data.  
+#' Creates a Kotka upload file out of the data given to it. The data can e.g. be a data frame given by [get_labeldata()], or a vector of sample IDs. 
 #'
-#' @param x A data frame returned by [get_labeldata()] or [verify_labeldata()].
-#' @param write.csv If TRUE (the default) the Kotka upload will be written to file "kotka_upload.csv", as well as returned invisibly. If FALSE, the Kotka upload will only be returned invisibly. 
+#' Handles wasps from the Malaise trapping in Uganda (2014-2015) and Peru (1998-2011), and from the canopy fogging in Ecuador. Other specimens will be included in the upload, but will only have minimal data.  
 #'
-#' @return A data frame with the Kotka upload. Also contains the columns of the input data frame (`x`), which the upload is based on. \cr
+#' Verification is handled by [verify_data()]. Checks that the samples actually exist. If columns "date_begin" and "date_end" were given, also checks they match the sample collecting dates. If there are problems, a message is displayed, and optionally (if write.csv=TRUE) details on the problems are saved to "kotka_upload_problems.csv".
+#'
+#' The input data (`x`) must contain column "sample" (or be a vector). The following columns, if present, are matched to their equivalents in Kotka:
+#' * box
+#' * date_begin
+#' * date_end
+#' * label
+#' * sex
 #' 
-#' The columns of `x` are there for reference before uploading. Typically, column `problems` will be checked so any issues can be fixed. These columns should be deleted before uploading to Kotka, they are marked with "delete this column" and are at the start of the file.
-#' 
+#' Any other columns are ignored.
+#'
+#' @param x A data frame with column "sample" and optionally other columns, e.g. as returned by [get_labeldata()]. Can also be a vector, in which case it is assumed to contain sample IDs. 
+#' @param verify If TRUE (the default), checks the input data in `x`. See Details. 
+#' @param write.csv If TRUE (the default) the Kotka upload will be written to file "kotka_upload.csv", as well as returned invisibly. If FALSE, the Kotka upload will only be returned invisibly. Also toggles whether to save problems identified by [verify_data()] to file.
+#'
+#' @return A data frame with the Kotka upload. \cr
+#'  
 #' @export
 #'
-#' @seealso [get_labeldata()] which extracts the data used by this function, [verify_labeldata()] which checks the extracted data for problems.
+#' @seealso [get_labeldata()] which extracts the data used by this function, [verify_data()] which checks the extracted data for problems.
 #' 
 #' @examples
-#' lab = c("cct1-141022", "PERU 1.-15.12.2000 I1/17", "Not a wasp label at all")
+#' lab = c("cct1-141022", 
+#' "PERU 1.-15.12.2000 I1/17", 
+#' "Not a wasp label at all", 
+#' "PERU 1.-16.12.2000 wrong date for I1/17", 
+#' "cct1-141023 non-existent sample")
 #' x = get_labeldata(lab)
-#' x = verify_labeldata(x)
 #' upload = make_kotkaupload(x, write.csv=FALSE)
-make_kotkaupload = function(x, write.csv=TRUE){
-	# Converts data extracted from labels into an upload file for Kotka.
-	# Uses helper function 'add_ecuadordata' and function 'add_malaisedata'.
-	# Returns a data frame with the extracted data and upload data.
-	# Also saves it as csv.
-	# (delete the extracted data columns before upload, they are for comparison only)
-	#  x  data frame returned by 'get_labeldata' or 'verify_labeldata'
-	#  write.csv  set to FALSE if you don't want to save to file
+make_kotkaupload = function(x, verify=TRUE, write.csv=TRUE){
 	
-	# create a data frame for the Kotka upload
+	# if 'x' is a vector instead of a data frame, assume it contains samples
+	if(is.vector(x)){
+		x = data.frame(sample=x)
+	}
+	
+	# verify input data
+	if (verify){
+		
+		# check that samples exist and their dates match user-input dates
+		x = verify_data(x, check_missing=FALSE, check_sample=TRUE)
+		
+		# if there are problems, show a warning message and (optionally) save problems to file
+		if (sum(x$sample_problem != "") > 0){
+			
+			# tell how many rows of data have problems
+			message(paste(sum(x$sample_problem != ""), "specimen(s) had incorrect sample IDs, or the sample dates do not match columns date_begin and date_end."))
+			
+			# write 'x' to file, with problems column included
+			if (write.csv){ utils::write.csv(x, "kotka_upload_problems.csv", row.names=F, na="") }
+				
+		}
+	}
+	
+	# get a basic Kotka upload from template
 	f = system.file("extdata", "kotka_template.csv", package = "wasps2kotka", mustWork = TRUE)
 	k = utils::read.csv(f, colClasses = "character", check.names=F, nrows=2)
 	
@@ -39,11 +70,8 @@ make_kotkaupload = function(x, write.csv=TRUE){
 	# make 'k' the right size, fill with default data from template
 	k[1:nrow(x), ] = k[1, ]
 	
-	# copy the labels and label data to 'k'
-	k$MYLabelsVerbatim = as.character(x$label)
-	k$"MYGathering[0][MYUnit][0][MYSex]" = as.character(x$sex)
-	k$"MYGathering[0][MYDateBegin]" = format(x$date_begin, "%d.%m.%Y")
-	k$"MYGathering[0][MYDateEnd]" = format(x$date_end, "%d.%m.%Y")
+	# add data from 'x' (e.g. sex and dates extracted from labels)
+	k = add_inputdata(k, x)
 	
 	# add Ecuadorian data from template to 'k'
 	k = add_ecuadordata(k, x)
@@ -51,21 +79,18 @@ make_kotkaupload = function(x, write.csv=TRUE){
 	# add Peruvian and Ugandan data from template and from sample data
 	k = add_malaisedata(k, x)
 	
-	# join 'x' and 'k', make sure all the columns are character
-	X = cbind(x, k)
-	X[] = lapply(X, as.character)
+	# make sure all the columns are character
+	k[] = lapply(k, as.character)
 	
-	# create 2nd header row (Kotka uses two header rows)
-	h2 = rep("delete this column", ncol(x))
-	h2 = c(h2, k2)
-	X = rbind(h2, X)
+	# return the 2nd header row (Kotka uses two header rows)
+	k = rbind(k2, k)
 	
 	# save as file
 	if(write.csv){
-		utils::write.csv(X, "kotka_upload.csv", row.names=F, na="")
+		utils::write.csv(k, "kotka_upload.csv", row.names=F, na="")
 	}
 	
 	# return
-	invisible(X)
+	invisible(k)
 	
 }

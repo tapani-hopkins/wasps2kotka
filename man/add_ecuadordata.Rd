@@ -9,13 +9,13 @@ add_ecuadordata(k, x)
 \arguments{
 \item{k}{A data frame containing the Kotka upload.}
 
-\item{x}{A data frame returned by \code{\link[=get_labeldata]{get_labeldata()}} or \code{\link[=verify_labeldata]{verify_labeldata()}}.}
+\item{x}{A data frame containing the user input. If there is no column "label", this function does nothing.}
 }
 \value{
 The data frame containing the Kotka upload (\code{k}) with Ecuadorian data added.
 }
 \description{
-This is a helper function used by \code{\link[=make_kotkaupload]{make_kotkaupload()}}. Add basic Ecuadorian data to a Kotka upload.
+This is a helper function used by \code{\link[=make_kotkaupload]{make_kotkaupload()}}. Adds basic Ecuadorian data to a Kotka upload. Recognises Ecuadorian wasps by looking at the labels.
 }
 \seealso{
 \code{\link[=make_kotkaupload]{make_kotkaupload()}}
