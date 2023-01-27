@@ -4,14 +4,21 @@
 \alias{make_upload}
 \title{Create a file for uploading wasp data to the Kotka database}
 \usage{
-make_upload(x, verify = TRUE, write.csv = TRUE)
+make_upload(
+  x,
+  verify = TRUE,
+  upload_file = "kotka_upload.csv",
+  problems_file = "kotka_upload_problems.csv"
+)
 }
 \arguments{
 \item{x}{A data frame with column "sample" and optionally other columns, e.g. as returned by \code{\link[=get_labeldata]{get_labeldata()}}. Can also be a vector, in which case it is assumed to contain sample IDs.}
 
 \item{verify}{If TRUE (the default), checks the input data in \code{x}. See Details.}
 
-\item{write.csv}{If TRUE (the default) the Kotka upload will be written to file "kotka_upload.csv", as well as returned invisibly. If FALSE, the Kotka upload will only be returned invisibly. Also toggles whether to save problems identified by \code{\link[=verify_data]{verify_data()}} to file.}
+\item{upload_file}{File path where to save the Kotka upload. Default is to save "kotka_upload.csv" in the working directory + return the data frame invisibly. If NA, the Kotka upload will only be returned invisibly.}
+
+\item{problems_file}{File path where to save problems identified by \code{\link[=verify_data]{verify_data()}}. Default is to save "kotka_upload_problems.csv" in the working directory. If NA, problems are not saved to file.}
 }
 \value{
 A data frame with the Kotka upload. \cr
@@ -22,7 +29,7 @@ Creates a Kotka upload file out of the data given to it. The data can e.g. be a 
 \details{
 Handles wasps from the Malaise trapping in Uganda (2014-2015) and Peru (1998-2011), and from the canopy fogging in Ecuador. Other specimens will be included in the upload, but will only have minimal data.
 
-Verification is handled by \code{\link[=verify_data]{verify_data()}}. Checks that the samples actually exist. If columns "date_begin" and "date_end" were given, also checks they match the sample collecting dates. If there are problems, a message is displayed, and optionally (if write.csv=TRUE) details on the problems are saved to "kotka_upload_problems.csv".
+Verification is handled by \code{\link[=verify_data]{verify_data()}}. Checks that the samples actually exist. If columns "date_begin" and "date_end" were given, also checks they match the sample collecting dates. If there are problems, a message is displayed, and optionally details on the problems are saved to file.
 
 The input data (\code{x}) must contain column "sample" (or be a vector). The following columns, if present, are matched to their equivalents in Kotka:
 \itemize{
@@ -42,7 +49,7 @@ lab = c("cct1-141022",
 "PERU 1.-16.12.2000 wrong date for I1/17", 
 "cct1-141023 non-existent sample")
 x = get_labeldata(lab)
-upload = make_upload(x, write.csv=FALSE)
+upload = make_upload(x, upload_file=NA, problems_file=NA)
 }
 \seealso{
 \code{\link[=get_labeldata]{get_labeldata()}} which extracts the data used by this function, \code{\link[=verify_data]{verify_data()}} which checks the extracted data for problems.

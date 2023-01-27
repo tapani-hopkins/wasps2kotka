@@ -4,7 +4,7 @@
 #'
 #' Handles wasps from the Malaise trapping in Uganda (2014-2015) and Peru (1998-2011), and from the canopy fogging in Ecuador. Other specimens will be included in the upload, but will only have minimal data.  
 #'
-#' Verification is handled by [verify_data()]. Checks that the samples actually exist. If columns "date_begin" and "date_end" were given, also checks they match the sample collecting dates. If there are problems, a message is displayed, and optionally (if write.csv=TRUE) details on the problems are saved to "kotka_upload_problems.csv".
+#' Verification is handled by [verify_data()]. Checks that the samples actually exist. If columns "date_begin" and "date_end" were given, also checks they match the sample collecting dates. If there are problems, a message is displayed, and optionally details on the problems are saved to file.
 #'
 #' The input data (`x`) must contain column "sample" (or be a vector). The following columns, if present, are matched to their equivalents in Kotka:
 #' * box
@@ -17,7 +17,8 @@
 #'
 #' @param x A data frame with column "sample" and optionally other columns, e.g. as returned by [get_labeldata()]. Can also be a vector, in which case it is assumed to contain sample IDs. 
 #' @param verify If TRUE (the default), checks the input data in `x`. See Details. 
-#' @param write.csv If TRUE (the default) the Kotka upload will be written to file "kotka_upload.csv", as well as returned invisibly. If FALSE, the Kotka upload will only be returned invisibly. Also toggles whether to save problems identified by [verify_data()] to file.
+#' @param upload_file File path where to save the Kotka upload. Default is to save "kotka_upload.csv" in the working directory + return the data frame invisibly. If NA, the Kotka upload will only be returned invisibly.
+#' @param problems_file File path where to save problems identified by [verify_data()]. Default is to save "kotka_upload_problems.csv" in the working directory. If NA, problems are not saved to file.
 #'
 #' @return A data frame with the Kotka upload. \cr
 #'  
@@ -32,8 +33,8 @@
 #' "PERU 1.-16.12.2000 wrong date for I1/17", 
 #' "cct1-141023 non-existent sample")
 #' x = get_labeldata(lab)
-#' upload = make_upload(x, write.csv=FALSE)
-make_upload = function(x, verify=TRUE, write.csv=TRUE){
+#' upload = make_upload(x, upload_file=NA, problems_file=NA)
+make_upload = function(x, verify=TRUE, upload_file="kotka_upload.csv", problems_file="kotka_upload_problems.csv"){
 	
 	# if 'x' is a vector instead of a data frame, assume it contains samples
 	if(is.vector(x)){
@@ -56,7 +57,9 @@ make_upload = function(x, verify=TRUE, write.csv=TRUE){
 			message(paste(sum(x$sample_problem != ""), "specimen(s) had incorrect sample IDs, or the sample dates do not match columns date_begin and date_end."))
 			
 			# write 'x' to file, with problems column included
-			if (write.csv){ utils::write.csv(x, "kotka_upload_problems.csv", row.names=F, na="") }
+			if (! is.na(problems_file)){
+				utils::write.csv(x, problems_file, row.names=F, na="")
+			}
 				
 		}
 	}
@@ -89,8 +92,8 @@ make_upload = function(x, verify=TRUE, write.csv=TRUE){
 	k = rbind(k2, k)
 	
 	# save as file
-	if(write.csv){
-		utils::write.csv(k, "kotka_upload.csv", row.names=F, na="")
+	if(! is.na(upload_file)){
+		utils::write.csv(k, upload_file, row.names=F, na="")
 	}
 	
 	# return

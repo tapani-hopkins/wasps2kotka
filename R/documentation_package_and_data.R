@@ -25,7 +25,7 @@
 #' x$missing_problem
 #' 
 #' # create a Kotka upload file for these wasps (but do not save it)
-#' upload = make_upload(x, verify=FALSE, write.csv=FALSE)
+#' upload = make_upload(x, verify=FALSE, upload_file=NA, problems_file=NA)
 #' upload
 #' @keywords internal
 "_PACKAGE"
