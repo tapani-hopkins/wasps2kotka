@@ -68,7 +68,7 @@ get_labeldata = function(lab, verify=TRUE){
 		# search for this sample's trap (e.g. "Malaise 2") in the labels
 		l1 = grepl(samples$trap_2008_2011[s], x$label, ignore.case=T)
 		
-		# search for this end date (e.g. "2008-06-05") in the labels
+		# search for this end date (e.g. "05.06.2008) in the labels
 		l2 = grepl(samples$date_end[s], x$date_end, ignore.case=T)
 		
 		# only get labels that match all the above
