@@ -12,7 +12,11 @@ make_upload(
 )
 }
 \arguments{
-\item{x}{A data frame with column "sample" and optionally other columns, e.g. as returned by \code{\link[=get_labeldata]{get_labeldata()}}. Can also be a vector, in which case it is assumed to contain sample IDs.}
+\item{x}{One of the following:
+\itemize{
+\item A data frame with column "sample" or "label", and optionally other columns. The samples will be used to fill in the Kotka upload. If labels are given, data is extracted from them (with \code{\link[=get_labeldata]{get_labeldata()}} and added to the data frame (without overwriting).
+\item A vector, in which case it is assumed to contain sample IDs.
+}}
 
 \item{verify}{If TRUE (the default), checks the input data in \code{x}. See Details.}
 
@@ -24,14 +28,17 @@ make_upload(
 A data frame with the Kotka upload. \cr
 }
 \description{
-Creates a Kotka upload file out of the data given to it. The data can e.g. be a data frame given by \code{\link[=get_labeldata]{get_labeldata()}}, or a vector of sample IDs.
+Creates a Kotka upload file out of the data given to it. The data can e.g. be a data frame with labels, or a vector of sample identifiers.
 }
 \details{
 Handles wasps from the Malaise trapping in Uganda (2014-2015) and Peru (1998-2011), and from the canopy fogging in Ecuador. Other specimens will be included in the upload, but will only have minimal data.
 
 Verification is handled by \code{\link[=verify_data]{verify_data()}}. Checks that the samples actually exist. If columns "date_begin" and "date_end" were given, also checks they match the sample collecting dates. If there are problems, a message is displayed, and optionally details on the problems are saved to file.
+The problem file contains all the input data, any data extracted from labels, and a column highlighting problems such as non-existent samples. (Note that the dates, if given, are those extracted from the labels, not necessarily those that go in the Kotka upload!)
 
-The input data (\code{x}) must contain column "sample" (or be a vector). The following columns, if present, are matched to their equivalents in Kotka:
+The input data (\code{x}) must contain column "sample" or "label" (or be a vector of samples). If only "label" is given, samples and other data will be extracted from the labels, and added to 'x'. Existing data is not overwritten: creates a new column if one didn't exist, otherwise only fills in gaps in the column.
+
+The following columns of 'x', if present, are matched to their equivalents in Kotka:
 \itemize{
 \item box
 \item date_begin
@@ -40,17 +47,23 @@ The input data (\code{x}) must contain column "sample" (or be a vector). The fol
 \item sex
 }
 
-Any other columns are ignored.
+Any other columns are currently ignored.
 }
 \examples{
-lab = c("cct1-141022", 
-"PERU 1.-15.12.2000 I1/17", 
-"Not a wasp label at all", 
-"PERU 1.-16.12.2000 wrong date for I1/17", 
-"cct1-141023 non-existent sample")
-x = get_labeldata(lab)
+# example labels
+labels = c(  
+"cct1-141022",  
+"PERU, Allpahuayo 1.-15.12.2000, Sääksjärvi I.E I1/17 Occia sp. 1. ♀",  
+"ECUADOR, Tiputini, 22. Oct 1998, Canopy fogging Lot# 1966 Meniscomorpha sp. 2",  
+"cct1-141023 incorrect sample ID",  
+"PERU, Allpahuayo 3.-16.12.2000, dates are wrong, Sääksjärvi I.E I1/17"
+)
+
+# save as data frame
+x = data.frame(label=labels)
+
 upload = make_upload(x, upload_file=NA, problems_file=NA)
 }
 \seealso{
-\code{\link[=get_labeldata]{get_labeldata()}} which extracts the data used by this function, \code{\link[=verify_data]{verify_data()}} which checks the extracted data for problems.
+\code{\link[=get_labeldata]{get_labeldata()}} which gets data from labels, \code{\link[=verify_data]{verify_data()}} which checks the data for problems.
 }

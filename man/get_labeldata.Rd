@@ -9,10 +9,10 @@ get_labeldata(lab, verify = TRUE)
 \arguments{
 \item{lab}{A character vector of label texts.}
 
-\item{verify}{A boolean (TRUE / FALSE) stating whether to check the results. E.g. check that the dates on the label match the dates when the sample was collected, and that no data is missing.}
+\item{verify}{A boolean (TRUE / FALSE) stating whether to check the results. E.g. check that the dates on the label match the dates when the sample was collected.}
 }
 \value{
-A data frame with the labels and the data extracted from them. If verify=TRUE, also has columns \code{missing_problem} and \code{sample_problem} giving info on any problems detected.
+A data frame with the labels and the data extracted from them. If verify=TRUE, also has column \code{sample_problem} giving info on any problems detected.
 }
 \description{
 Extract dates, sample ID and other data from the wasp labels typically found at the museum. Handles wasp labels from the Malaise trapping in Peru (1998-2011), and from the canopy fogging in Ecuador. Can also recognise sample IDs from the Malaise trapping in Uganda (2014-2015). The resulting data frame can be used as is, or as the basis for creating a Kotka upload.

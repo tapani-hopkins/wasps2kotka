@@ -1,21 +1,26 @@
 #' Create a file for uploading wasp data to the Kotka database
 #'
-#' Creates a Kotka upload file out of the data given to it. The data can e.g. be a data frame given by [get_labeldata()], or a vector of sample IDs. 
+#' Creates a Kotka upload file out of the data given to it. The data can e.g. be a data frame with labels, or a vector of sample identifiers. 
 #'
 #' Handles wasps from the Malaise trapping in Uganda (2014-2015) and Peru (1998-2011), and from the canopy fogging in Ecuador. Other specimens will be included in the upload, but will only have minimal data.  
 #'
-#' Verification is handled by [verify_data()]. Checks that the samples actually exist. If columns "date_begin" and "date_end" were given, also checks they match the sample collecting dates. If there are problems, a message is displayed, and optionally details on the problems are saved to file.
+#' Verification is handled by [verify_data()]. Checks that the samples actually exist. If columns "date_begin" and "date_end" were given, also checks they match the sample collecting dates. If there are problems, a message is displayed, and optionally details on the problems are saved to file. 
+#' The problem file contains all the input data, any data extracted from labels, and a column highlighting problems such as non-existent samples. (Note that the dates, if given, are those extracted from the labels, not necessarily those that go in the Kotka upload!)
 #'
-#' The input data (`x`) must contain column "sample" (or be a vector). The following columns, if present, are matched to their equivalents in Kotka:
+#' The input data (`x`) must contain column "sample" or "label" (or be a vector of samples). If only "label" is given, samples and other data will be extracted from the labels, and added to 'x'. Existing data is not overwritten: creates a new column if one didn't exist, otherwise only fills in gaps in the column. 
+#' 
+#' The following columns of 'x', if present, are matched to their equivalents in Kotka:
 #' * box
 #' * date_begin
 #' * date_end
 #' * label
 #' * sex
 #' 
-#' Any other columns are ignored.
+#' Any other columns are currently ignored.
 #'
-#' @param x A data frame with column "sample" and optionally other columns, e.g. as returned by [get_labeldata()]. Can also be a vector, in which case it is assumed to contain sample IDs. 
+#' @param x One of the following:
+#' * A data frame with column "sample" or "label", and optionally other columns. The samples will be used to fill in the Kotka upload. If labels are given, data is extracted from them (with [get_labeldata()] and added to the data frame (without overwriting). 
+#' * A vector, in which case it is assumed to contain sample IDs. 
 #' @param verify If TRUE (the default), checks the input data in `x`. See Details. 
 #' @param upload_file File path where to save the Kotka upload. Default is to save "kotka_upload.csv" in the working directory + return the data frame invisibly. If NA, the Kotka upload will only be returned invisibly.
 #' @param problems_file File path where to save problems identified by [verify_data()]. Default is to save "kotka_upload_problems.csv" in the working directory. If NA, problems are not saved to file.
@@ -24,21 +29,50 @@
 #'  
 #' @export
 #'
-#' @seealso [get_labeldata()] which extracts the data used by this function, [verify_data()] which checks the extracted data for problems.
+#' @seealso [get_labeldata()] which gets data from labels, [verify_data()] which checks the data for problems.
 #' 
 #' @examples
-#' lab = c("cct1-141022", 
-#' "PERU 1.-15.12.2000 I1/17", 
-#' "Not a wasp label at all", 
-#' "PERU 1.-16.12.2000 wrong date for I1/17", 
-#' "cct1-141023 non-existent sample")
-#' x = get_labeldata(lab)
+#' # example labels
+#' labels = c(  
+#' "cct1-141022",  
+#' "PERU, Allpahuayo 1.-15.12.2000, Sääksjärvi I.E I1/17 Occia sp. 1. ♀",  
+#' "ECUADOR, Tiputini, 22. Oct 1998, Canopy fogging Lot# 1966 Meniscomorpha sp. 2",  
+#' "cct1-141023 incorrect sample ID",  
+#' "PERU, Allpahuayo 3.-16.12.2000, dates are wrong, Sääksjärvi I.E I1/17"
+#' )
+#' 
+#' # save as data frame
+#' x = data.frame(label=labels)
+#'
 #' upload = make_upload(x, upload_file=NA, problems_file=NA)
 make_upload = function(x, verify=TRUE, upload_file="kotka_upload.csv", problems_file="kotka_upload_problems.csv"){
 	
 	# if 'x' is a vector instead of a data frame, assume it contains samples
 	if(is.vector(x)){
 		x = data.frame(sample=x)
+	}
+	
+	# if labels were given, get data from them and add to 'x'
+	if("label" %in% colnames(x) ){
+		
+		# get data from labels
+		X = get_labeldata(x$label)
+		
+		# add each column of label data to 'x'
+		for (cname in colnames(X)){
+			
+			# if the user already gave this column, only add label data to any empty cells
+			if (cname %in% colnames(x)){
+				i = which( is.na(x[, cname]) | as.character(x[, cname])=="" )
+				x[i, cname] = X[i, cname]
+				
+			# .. otherwise add the entire column of label data
+			} else {
+				x[, cname] = X[, cname]
+			}
+			
+		}
+		
 	}
 	
 	# convert samples to upper case to make sure they compare properly
@@ -48,7 +82,7 @@ make_upload = function(x, verify=TRUE, upload_file="kotka_upload.csv", problems_
 	if (verify){
 		
 		# check that samples exist and their dates match user-input dates
-		x = verify_data(x, check_missing=FALSE, check_sample=TRUE)
+		x = verify_data(x)
 		
 		# if there are problems, show a warning message and (optionally) save problems to file
 		if (sum(x$sample_problem != "") > 0){
@@ -61,7 +95,8 @@ make_upload = function(x, verify=TRUE, upload_file="kotka_upload.csv", problems_
 				utils::write.csv(x, problems_file, row.names=F, na="")
 			}
 				
-		}
+		}	
+		
 	}
 	
 	# get a basic Kotka upload from template

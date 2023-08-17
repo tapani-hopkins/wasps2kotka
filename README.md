@@ -26,20 +26,19 @@ devtools::install_github("tapani-hopkins/wasps2kotka")
 ### Short version
 
 ``` r
-# save labels
-example_labels = c( "PERU 1.-15.12.2000, I1/17", "Tiputini 22. Oct 1998 Canopy fogging" )
-
 # load the package
 library(wasps2kotka)
 
+# save example labels
+x = data.frame(label=c( "PERU 1.-15.12.2000, I1/17", "Tiputini 22. Oct 1998 Canopy fogging" ))
+
 # get data from the labels, verify it and create upload
-x = get_labeldata(example_labels)
 make_upload(x)
 ```
 
 ### More detailed usage
 
-Typically, you will have a list of label texts (Peru & Ecuador) or sample IDs (Uganda). Something like this:
+Typically, you will have a list of label texts (Peru & Ecuador) or sample identifiers (Uganda). Something like this:
 
 > PERU, Dept. of Loreto Iquitos area, Allpahuayo 1.-15.12.2000, white sand Sääksjärvi I.E et al. leg. Malaise trap, APHI, I1/17  
 Hylesicida sp. ♂ 1st male Det. Ilari Sääksiärvi 2011  
@@ -59,29 +58,34 @@ The job of this package is to go through all of these labels, and detect that:
 .. and then pack all of the data (from labels and their associated samples) into a Kotka upload file.
 
 To get this done, simply load the labels to R. You can e.g. save them in Excel, export as csv, then read them in to R with `read.csv`.
+
 ``` r
-labels = read.csv("/path/to/labelfile.csv", as.is=TRUE)[, 1]
+labels = read.csv("/path/to/labelfile.csv", as.is=TRUE)
 ```
 
-Once the labels are in R, all you need to do is get the data from them (`get_labeldata`), and create the Kotka upload file(`make_upload`):
+Easiest is to name the column that has labels "label". This column name is recognised automatically by the script. You can also give additional data in the following columns:
+- `box` Added to the equivalent column in Kotka, "MYDocumentLocation".
+- `date_begin` Start date in format "04.12.1998".
+- `date_end` End date in format "04.12.1998".
+- `sample` Sample identifier. If the labels give a different sample to this, this is the sample whose data will be added to Kotka.
+- `sex` One of "F", "M" or "U". If the sex given by labels contradicts this, this is the one which will be added to Kotka.
 
 ``` r
-# example labels
-labels = c(
-"cct1-141022",  
-"PERU, Allpahuayo 1.-15.12.2000, Sääksjärvi I.E I1/17",  
-"ECUADOR, Tiputini, 22. Oct 1998, Canopy fogging Lot# 1966 Meniscomorpha sp. 2"  
-)
-
 # load the package
 library(wasps2kotka)
 
-# get data from the labels
-x = get_labeldata(labels, verify=TRUE)
+# example labels
+labels = c(
+"cct1-141022",  
+"PERU, Allpahuayo 1.-15.12.2000, Sääksjärvi I.E I1/17 Occia sp. 1. ♀ ",  
+"ECUADOR, Tiputini, 22. Oct 1998, Canopy fogging Lot# 1966 Meniscomorpha sp. 2"  
+)
 
-# check the extracted data (e.g. that no data is missing, dates look right..)
-x$missing_problem
-x$sample_problem
+# example data on sex (wasp 1 is female)
+sex = c("F", NA, NA)
+
+# save labels and other data as data frame
+x = data.frame(label=labels, sex=sex)
 
 # create a Kotka upload file for these wasps
 make_upload(x)

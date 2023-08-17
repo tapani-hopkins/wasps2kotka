@@ -332,16 +332,14 @@ read = function(file, nheaders=2, ...){
 #'
 #' This is a helper function used by [make_upload()] and [get_labeldata()]. Checks that the data they are handling looks right, and highlights any problems.
 #'
-#' Any problems, such as sample dates not matching dates on the label, will be added to separate column(s) to the data. 
+#' Any problems, such as samples not existing or sample dates not matching dates on the label, will be added to a separate column to the data. 
 #'
 #' @param x A data frame, e.g. that created by [get_labeldata()] or received by [make_upload()]. Must include column "sample".
-#' @param check_missing A Boolean stating whether to check for missing data. Typically TRUE to check that everything was succesfully extracted from labels.
-#' @param check_sample A Boolean stating whether to check that the samples exist and their data matches the other columns in `x`.
 #'
-#' @return The input data frame with extra columns "missing_problem" (if check_missing is TRUE) and "sample_problem" (if check_sample is TRUE). 
+#' @return The input data frame with extra column "sample_problem". 
 #'
 #' @seealso [get_labeldata()] whose data this function checks, [make_upload()] which creates a Kotka upload file out of the returned data frame.
-verify_data = function(x, check_missing=TRUE, check_sample=TRUE){
+verify_data = function(x){
 	
 	# load the sample list
 	samples = wasps2kotka::malaise_samples
@@ -353,65 +351,28 @@ verify_data = function(x, check_missing=TRUE, check_sample=TRUE){
 	# check which samples exist (=not NA, missing or a mistype)
 	sample_exists = x$sample %in% samples$sample
 	
-	# check for missing data
-	if (check_missing){
+	# create a column for messages about problems
+	x$sample_problem = ""
 		
-		# create a column for messages about missing data
-		x$missing_problem = ""
+	# find samples which do not exist (typically these are mistyped sample IDs)
+	i = which(! sample_exists & ! is.na(x$sample))
+	x$sample_problem[i] = add(x$sample_problem[i], "Sample does not exist.")		
 		
-		# check which cells have no data
-		empty = is.na(x)
+	# find samples whose collecting dates do not match columns "date_begin" and "date_end"
+	if (all(c("date_begin", "date_end") %in% colnames(x))){
 		
-		# examine one row at a time, write messages about missing data
-		for (i in 1:nrow(empty)){
+		# get the valid samples in 'x' and what row they match in the sample list 
+		i = sample_exists & !is.na(x$date_begin) & !is.na(x$date_end)
+		s = match(x$sample[i], samples$sample)
 			
-			# save the column names that lack data (on this row)
-			missing_cols = colnames(empty)[empty[i,]]
+		# find specimens whose sample collecting dates don't match user input dates
+		mmb = which(x$date_begin[i] != samples$date_begin[s])
+		mme = which(x$date_end[i] != samples$date_end[s])
 			
-			# ignore missing end dates
-			missing_cols = missing_cols[! missing_cols %in% c("date_end")]
+		# add to column 'sample_problem'
+		x$sample_problem[i][mmb] = add(x$sample_problem[i][mmb], "Given start date does not match sample's start date.")
+		x$sample_problem[i][mme] = add(x$sample_problem[i][mme], "Given end date does not match sample's end date.")
 			
-			# ignore missing begin and end dates if the sample exists
-			if (sample_exists[i]){
-				missing_cols = missing_cols[! missing_cols %in% c("date_begin", "date_end")]
-			}
-			
-			# add a message saying what columns have no data
-			if (length(missing_cols) > 0){
-				x$missing_problem[i] = paste("Missing", paste(missing_cols, collapse=", "))
-			}
-			
-		}
-			
-	}
-	
-	# check that the samples exist and their data is consistent with the input data
-	if (check_sample){
-		
-		# create a column for messages about problems
-		x$sample_problem = ""
-		
-		# find samples which do not exist (typically these are mistyped sample IDs)
-		i = which(! sample_exists & ! is.na(x$sample))
-		x$sample_problem[i] = add(x$sample_problem[i], "Sample does not exist.")		
-		
-		# find samples whose collecting dates do not match columns "date_begin" and "date_end"
-		if (all(c("date_begin", "date_end") %in% colnames(x))){
-			
-			# get the valid samples in 'x' and what row they match in the sample list 
-			i = sample_exists & !is.na(x$date_begin) & !is.na(x$date_end)
-			s = match(x$sample[i], samples$sample)
-			
-			# find specimens whose sample collecting dates don't match user input dates
-			mmb = which(x$date_begin[i] != samples$date_begin[s])
-			mme = which(x$date_end[i] != samples$date_end[s])
-			
-			# add to column 'sample_problem'
-			x$sample_problem[i][mmb] = add(x$sample_problem[i][mmb], "Given start date does not match sample's start date.")
-			x$sample_problem[i][mme] = add(x$sample_problem[i][mme], "Given end date does not match sample's end date.")
-			
-		}
-		
 	}
 	
 	# return

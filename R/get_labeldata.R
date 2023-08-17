@@ -3,9 +3,9 @@
 #' Extract dates, sample ID and other data from the wasp labels typically found at the museum. Handles wasp labels from the Malaise trapping in Peru (1998-2011), and from the canopy fogging in Ecuador. Can also recognise sample IDs from the Malaise trapping in Uganda (2014-2015). The resulting data frame can be used as is, or as the basis for creating a Kotka upload.
 #'
 #' @param lab A character vector of label texts.
-#' @param verify A boolean (TRUE / FALSE) stating whether to check the results. E.g. check that the dates on the label match the dates when the sample was collected, and that no data is missing.
+#' @param verify A boolean (TRUE / FALSE) stating whether to check the results. E.g. check that the dates on the label match the dates when the sample was collected.
 #'
-#' @return A data frame with the labels and the data extracted from them. If verify=TRUE, also has columns `missing_problem` and `sample_problem` giving info on any problems detected.
+#' @return A data frame with the labels and the data extracted from them. If verify=TRUE, also has column `sample_problem` giving info on any problems detected.
 #' @export
 #'
 #' @seealso [verify_data()] which checks the results, [make_upload()] which creates a Kotka upload file out of the returned data frame.
