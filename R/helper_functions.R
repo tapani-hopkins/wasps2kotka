@@ -96,7 +96,7 @@ add_inputdata = function(k, x){
 			kname = equivalents$kotka[equivalents$input == cname]
 		
 			# get rows that are not empty
-			i = which(! is.na(x[, cname]) & x[, cname] != "")
+			i = which(! is.na(x[, cname]) & as.character(x[, cname]) != "")
 		
 			# add the non-empty rows to the correct column in 'k'
 			k[i, kname] = as.character(x[i, cname])
@@ -243,7 +243,7 @@ get_d_begin = function(x, d_end){
 #'
 #' @param lab A character vector of label texts. 
 #'
-#' @return A data frame with two columns, giving the start and end dates as objects of class `Date`.
+#' @return A data frame with two columns, giving the start and end dates as strings in Kotka format (e.g. "04.12.1998").
 #'
 #' @seealso [get_labeldata()], and [getreg()] and [get_d_begin()] which are used by this function
 get_dates = function(lab){
@@ -271,6 +271,10 @@ get_dates = function(lab){
 	# (Ecuadorian samples were collected in one day, so no end date)
 	valid = which(!is.na(dates))
 	d_begin[valid] = dates[valid]
+	
+	# convert start and end dates to Kotka format (e.g. "04.09.1998")
+	d_begin = format(d_begin, "%d.%m.%Y")
+	d_end = format(d_end, "%d.%m.%Y")
 
 	# return as data frame		
 	return(data.frame(date_begin=d_begin, date_end=d_end))
@@ -339,10 +343,8 @@ read = function(file, nheaders=2, ...){
 #' @seealso [get_labeldata()] whose data this function checks, [make_upload()] which creates a Kotka upload file out of the returned data frame.
 verify_data = function(x, check_missing=TRUE, check_sample=TRUE){
 	
-	# load the sample list, convert dates to date object
+	# load the sample list
 	samples = wasps2kotka::malaise_samples
-	samples$date_begin = as.Date(samples$date_begin, format="%d.%m.%Y")
-	samples$date_end = as.Date(samples$date_end, format="%d.%m.%Y")
 	
 	# convert samples to upper case, to make sure they compare ok
 	x$sample = toupper(x$sample)

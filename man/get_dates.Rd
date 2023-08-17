@@ -10,7 +10,7 @@ get_dates(lab)
 \item{lab}{A character vector of label texts.}
 }
 \value{
-A data frame with two columns, giving the start and end dates as objects of class \code{Date}.
+A data frame with two columns, giving the start and end dates as strings in Kotka format (e.g. "04.12.1998").
 }
 \description{
 This is a helper function used by \code{\link[=get_labeldata]{get_labeldata()}}. Extract those strings in Peruvian and Ecuadorian labels which represent dates (e.g. \emph{1.-15.12.2000} or \emph{22. Oct 1998}).
