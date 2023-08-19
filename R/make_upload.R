@@ -19,8 +19,9 @@
 #' Any other columns are currently ignored.
 #'
 #' @param x One of the following:
-#' * A data frame with column "sample" or "label", and optionally other columns. The samples will be used to fill in the Kotka upload. If labels are given, data is extracted from them (with [get_labeldata()] and added to the data frame (without overwriting). 
+#' * A data frame with column "sample" or "label", and optionally other columns. The samples will be used to fill in the Kotka upload. If labels are given, data is extracted from them with [get_labeldata()] and added to the data frame (without overwriting). 
 #' * A vector, in which case it is assumed to contain sample IDs. 
+#' @param nwasps How many wasps each label or sample corresponds to. Numeric vector of same length (or number of rows) as 'x', or of length 1. Default is "1", every label corresponds to a single wasp.
 #' @param verify If TRUE (the default), checks the input data in `x`. See Details. 
 #' @param upload_file File path where to save the Kotka upload. Default is to save "kotka_upload.csv" in the working directory + return the data frame invisibly. If NA, the Kotka upload will only be returned invisibly.
 #' @param problems_file File path where to save problems identified by [verify_data()]. Default is to save "kotka_upload_problems.csv" in the working directory. If NA, problems are not saved to file.
@@ -32,7 +33,7 @@
 #' @seealso [get_labeldata()] which gets data from labels, [verify_data()] which checks the data for problems.
 #' 
 #' @examples
-#' # example labels
+#' # example labels 1
 #' labels = c(  
 #' "cct1-141022",  
 #' "PERU, Allpahuayo 1.-15.12.2000, Sääksjärvi I.E I1/17 Occia sp. 1. ♀",  
@@ -44,8 +45,16 @@
 #' # save as data frame
 #' x = data.frame(label=labels)
 #'
-#' upload = make_upload(x, upload_file=NA, problems_file=NA)
-make_upload = function(x, verify=TRUE, upload_file="kotka_upload.csv", problems_file="kotka_upload_problems.csv"){
+#' # create upload but don't save to file
+#' upload1 = make_upload(x, upload_file=NA, problems_file=NA)
+#'
+#'
+#' # example labels 2 (real labels from Peru and Ecuador)
+#' x = example_labels
+#'
+#' # create upload but don't save to file
+#' upload2 = make_upload(x, upload_file=NA, problems_file=NA)
+make_upload = function(x, nwasps=1, verify=TRUE, upload_file="kotka_upload.csv", problems_file="kotka_upload_problems.csv"){
 	
 	# if 'x' is a vector instead of a data frame, assume it contains samples
 	if(is.vector(x)){
@@ -73,6 +82,13 @@ make_upload = function(x, verify=TRUE, upload_file="kotka_upload.csv", problems_
 			
 		}
 		
+	}
+	
+	# repeat each row 'nwasps' times
+	if ( length(nwasps) == nrow(x) | length(nwasps) == 1 ){
+		x = x[rep(1:nrow(x), nwasps), , drop=FALSE]
+	} else {
+		stop("'nwasps' should be the same length as the number of samples or labels, or of length 1.")
 	}
 	
 	# convert samples to upper case to make sure they compare properly

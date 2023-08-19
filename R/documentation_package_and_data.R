@@ -30,6 +30,17 @@
 "_PACKAGE"
 
 
+#' Example labels of wasps from Peru and Ecuador
+#'
+#' Labels of Amazonian wasps collected in Peru and Ecuador. These give a good example of what kind of labels there are: Ecuadorian canopy fogging labels, Peruvian labels from 1998-2011, quite a few mistypes, mistakes etc.. These are real labels of Banchinae wasps.
+#'
+#' @format A data frame with 188 rows (one row for each wasp) and 1 variables:
+#' \describe{
+#'   \item{label}{Text of labels in the format expected by Kotka. Each label on a separate row, separated by carriage returns.}
+#' }
+"example_labels"
+
+
 #' Malaise samples collected in Peru and Uganda (overview)
 #'
 #' An abbreviated version of the `malaise_samples_kotka_format` dataset. Contains basic data on what Malaise samples were collected in Peru and Uganda, including how the samples might be written on labels. Used by the script to e.g. recognise sample IDs from labels.

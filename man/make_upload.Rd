@@ -6,6 +6,7 @@
 \usage{
 make_upload(
   x,
+  nwasps = 1,
   verify = TRUE,
   upload_file = "kotka_upload.csv",
   problems_file = "kotka_upload_problems.csv"
@@ -14,9 +15,11 @@ make_upload(
 \arguments{
 \item{x}{One of the following:
 \itemize{
-\item A data frame with column "sample" or "label", and optionally other columns. The samples will be used to fill in the Kotka upload. If labels are given, data is extracted from them (with \code{\link[=get_labeldata]{get_labeldata()}} and added to the data frame (without overwriting).
+\item A data frame with column "sample" or "label", and optionally other columns. The samples will be used to fill in the Kotka upload. If labels are given, data is extracted from them with \code{\link[=get_labeldata]{get_labeldata()}} and added to the data frame (without overwriting).
 \item A vector, in which case it is assumed to contain sample IDs.
 }}
+
+\item{nwasps}{How many wasps each label or sample corresponds to. Numeric vector of same length (or number of rows) as 'x', or of length 1. Default is "1", every label corresponds to a single wasp.}
 
 \item{verify}{If TRUE (the default), checks the input data in \code{x}. See Details.}
 
@@ -50,7 +53,7 @@ The following columns of 'x', if present, are matched to their equivalents in Ko
 Any other columns are currently ignored.
 }
 \examples{
-# example labels
+# example labels 1
 labels = c(  
 "cct1-141022",  
 "PERU, Allpahuayo 1.-15.12.2000, Sääksjärvi I.E I1/17 Occia sp. 1. ♀",  
@@ -62,7 +65,15 @@ labels = c(
 # save as data frame
 x = data.frame(label=labels)
 
-upload = make_upload(x, upload_file=NA, problems_file=NA)
+# create upload but don't save to file
+upload1 = make_upload(x, upload_file=NA, problems_file=NA)
+
+
+# example labels 2 (real labels from Peru and Ecuador)
+x = example_labels
+
+# create upload but don't save to file
+upload2 = make_upload(x, upload_file=NA, problems_file=NA)
 }
 \seealso{
 \code{\link[=get_labeldata]{get_labeldata()}} which gets data from labels, \code{\link[=verify_data]{verify_data()}} which checks the data for problems.
