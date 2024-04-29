@@ -23,6 +23,7 @@
 #' * A vector, in which case it is assumed to contain sample IDs. 
 #' @param nwasps How many wasps each label or sample corresponds to. Numeric vector of same length (or number of rows) as 'x', or of length 1. Default is "1", every label corresponds to a single wasp.
 #' @param verify If TRUE (the default), checks the input data in `x`. See Details. 
+#' @param subsample If TRUE, gives an upload for subsamples, e.g. jars of wasps or miscellaneous insects separated from the Ugandan and Peruvian Malaise samples. Default is FALSE: gives data for individual specimens, typically pinned wasps.
 #' @param upload_file File path where to save the Kotka upload. Default is to save "kotka_upload.csv" in the working directory + return the data frame invisibly. If NA, the Kotka upload will only be returned invisibly.
 #' @param problems_file File path where to save problems identified by [verify_data()]. Default is to save "kotka_upload_problems.csv" in the working directory. If NA, problems are not saved to file.
 #'
@@ -54,7 +55,7 @@
 #'
 #' # create upload but don't save to file
 #' upload2 = make_upload(x, upload_file=NA, problems_file=NA)
-make_upload = function(x, nwasps=1, verify=TRUE, upload_file="kotka_upload.csv", problems_file="kotka_upload_problems.csv"){
+make_upload = function(x, nwasps=1, verify=TRUE, subsample=FALSE, upload_file="kotka_upload.csv", problems_file="kotka_upload_problems.csv"){
 	
 	# if 'x' is a vector instead of a data frame, assume it contains samples
 	if(is.vector(x)){
@@ -134,7 +135,7 @@ make_upload = function(x, nwasps=1, verify=TRUE, upload_file="kotka_upload.csv",
 	k = add_ecuadordata(k, x)
 	
 	# add Peruvian and Ugandan data from template and from sample data
-	k = add_malaisedata(k, x)
+	k = add_malaisedata(k, x, subsample)
 	
 	# make sure all the columns are character
 	k[] = lapply(k, as.character)

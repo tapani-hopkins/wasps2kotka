@@ -21,7 +21,7 @@ What columns to extract from the Malaise sample data ("malaise_samples_kotka_for
 
 Default data to add to the Kotka upload. This is the basic data shared by all wasps. 
 
-The Kotka upload will be in the same format as this file. If you want to change the column order of the upload file, change the order here. If you want to have more columns, download them from Kotka and add here.
+The Kotka upload will be in the same format as this file. If you want to change the column order of the upload file, change the order here. If you want to have more columns, download them from Kotka and add here. (At the moment, the other template files will need to have the same column order for the script to work properly, so change in them too.)
 
 
 ## kotka_template_Ecuador.csv
@@ -32,3 +32,7 @@ Ecuadorian data to add to the Kotka uploads. This is the basic data shared by al
 ## kotka_template_malaise.csv
 
 Malaise sample data to add to the Kotka uploads. This is the basic data shared by all wasps caught by Malaise trapping in Peru and Uganda. Often not needed, since the default data and sample data will often already contain everything in here.
+
+## kotka_template_subsample.csv
+
+Data to add to the Kotka uploads for subsamples. This is data for subsamples such as braconids, miscellaneous insects etc, separated from the main Malaise samples. Overwrites some of the basic data shared by individual wasps (e.g. "count", since there are several individuals).

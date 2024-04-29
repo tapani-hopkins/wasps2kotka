@@ -4,12 +4,14 @@
 \alias{add_malaisedata}
 \title{Add Peruvian and Ugandan data to Kotka upload}
 \usage{
-add_malaisedata(k, x)
+add_malaisedata(k, x, subsample = FALSE)
 }
 \arguments{
 \item{k}{A data frame containing the Kotka upload.}
 
 \item{x}{A data frame containing the user input. If there is no column "sample", this function does nothing.}
+
+\item{subsample}{If TRUE, gives data for subsamples instead of for individual pinned insects.}
 }
 \value{
 The data frame containing the Kotka upload (\code{k}) with Peruvian and Ugandan data added.

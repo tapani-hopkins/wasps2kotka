@@ -116,11 +116,12 @@ add_inputdata = function(k, x){
 #'
 #' @param k A data frame containing the Kotka upload. 
 #' @param x A data frame containing the user input. If there is no column "sample", this function does nothing.
+#' @param subsample If TRUE, gives data for subsamples instead of for individual pinned insects.
 #'
 #' @return The data frame containing the Kotka upload (`k`) with Peruvian and Ugandan data added.
 #'
 #' @seealso [make_upload()], and [read()] which is used by this function
-add_malaisedata = function(k, x){
+add_malaisedata = function(k, x, subsample=FALSE){
 	
 	# do nothing if there is no column "sample" in the input data
 	if ("sample" %in% colnames(x)){
@@ -152,6 +153,10 @@ add_malaisedata = function(k, x){
 		# load Kotka template for Malaise data (=data shared by all Malaise samples)
 		f = system.file("extdata", "kotka_template_malaise.csv", package = "wasps2kotka", mustWork = TRUE)
 		kotka_template = read(f, 2)
+		
+		# load Kotka template for subsample data (=data shared by all subsamples of Malaise samples)
+		f = system.file("extdata", "kotka_template_subsample.csv", package = "wasps2kotka", mustWork = TRUE)
+		subsample_template = read(f, 2)
 	
 		# find the specimens which are from Peruvian or Ugandan Malaise samples
 		i = which(x$sample %in% samples2$sample)
@@ -165,6 +170,12 @@ add_malaisedata = function(k, x){
 	
 		# copy the sample data to 'k'
 		k[i, what_cols] = samples[s, what_cols]
+		
+		# overwrite some columns with subsample data if this is a subsample
+		if (subsample){
+			cols = which(subsample_template[1, ] != "")
+			k[i, cols] = subsample_template[, cols]
+		}
 	
 		# add the sample the specimen came from to 'k'
 		sampleID = samples$"MYObjectID"[s]

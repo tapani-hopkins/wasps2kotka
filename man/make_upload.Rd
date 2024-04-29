@@ -8,6 +8,7 @@ make_upload(
   x,
   nwasps = 1,
   verify = TRUE,
+  subsample = FALSE,
   upload_file = "kotka_upload.csv",
   problems_file = "kotka_upload_problems.csv"
 )
@@ -22,6 +23,8 @@ make_upload(
 \item{nwasps}{How many wasps each label or sample corresponds to. Numeric vector of same length (or number of rows) as 'x', or of length 1. Default is "1", every label corresponds to a single wasp.}
 
 \item{verify}{If TRUE (the default), checks the input data in \code{x}. See Details.}
+
+\item{subsample}{If TRUE, gives an upload for subsamples, e.g. jars of wasps or miscellaneous insects separated from the Ugandan and Peruvian Malaise samples. Default is FALSE: gives data for individual specimens, typically pinned wasps.}
 
 \item{upload_file}{File path where to save the Kotka upload. Default is to save "kotka_upload.csv" in the working directory + return the data frame invisibly. If NA, the Kotka upload will only be returned invisibly.}
 
