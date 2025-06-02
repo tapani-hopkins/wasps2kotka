@@ -128,20 +128,20 @@ add_malaisedata = function(k, x, subsample=FALSE){
 		
 		# load the Malaise sample data
 		# (in two files: Kotka format, and overview file)
-		#samples = wasps2kotka::malaise_samples_kotka_format
-		#samples2 = wasps2kotka::malaise_samples
+		samples = wasps2kotka::malaise_samples_kotka_format
+		samples2 = wasps2kotka::malaise_samples
 		
 		# convert samples to upper case, to make sure they compare OK
-		m_kotka$"MYOriginalSpecimenID" = toupper(m_kotka$"MYOriginalSpecimenID")
-		m$sample = toupper(m$sample)
+		samples$"MYOriginalSpecimenID" = toupper(samples$"MYOriginalSpecimenID")
+		samples2$sample = toupper(samples2$sample)
 		x$sample = toupper(x$sample)
 	
 		# overwrite the datasets with those of the overview file
 		# (the Kotka data contains irrelevant datasets)
-		i = match(m_kotka$"MYOriginalSpecimenID", m$sample)
-		m = m[i, ]
+		i = match(samples$"MYOriginalSpecimenID", samples2$sample)
+		samples2 = samples2[i, ]
 		dcols = c("MYDatasetID[0]", "MYDatasetID[1]", "MYDatasetID[2]", "MYDatasetID[3]")
-		m_kotka[dcols] = m[dcols]
+		samples[dcols] = samples2[dcols]
 	
 		# load the data frame that tells what columns of sample data should be copied to the Kotka upload
 		f = system.file("extdata", "kotka_desired_malaise_sample_columns.csv", package = "wasps2kotka", mustWork = TRUE)
@@ -159,17 +159,17 @@ add_malaisedata = function(k, x, subsample=FALSE){
 		subsample_template = read(f, 2)
 	
 		# find the specimens which are from Peruvian or Ugandan Malaise samples
-		i = which(x$sample %in% m$sample)
+		i = which(x$sample %in% samples2$sample)
 	
 		# get the index of the corresponding samples
-		s = match(x$sample[i], m_kotka$"MYOriginalSpecimenID")	
+		s = match(x$sample[i], samples$"MYOriginalSpecimenID")	
 	
 		# copy the default data (shared by all samples) from the Kotka template to 'k'
 		cols = which(kotka_template[1, ] != "")
 		k[i, cols] = kotka_template[, cols]
 	
 		# copy the sample data to 'k'
-		k[i, what_cols] = m_kotka[s, what_cols]
+		k[i, what_cols] = samples[s, what_cols]
 		
 		# overwrite some columns with subsample data if this is a subsample
 		if (subsample){
@@ -178,7 +178,7 @@ add_malaisedata = function(k, x, subsample=FALSE){
 		}
 	
 		# add the sample the specimen came from to 'k'
-		sampleID = m_kotka$"MYObjectID"[s]
+		sampleID = samples$"MYObjectID"[s]
 		sampleID = paste0("http://mus.utu.fi/ZMUT.", sampleID)
 		k$"MYSeparatedFrom"[i] = sampleID
 	
@@ -353,14 +353,14 @@ read = function(file, nheaders=2, ...){
 verify_data = function(x){
 	
 	# load the sample list
-	#samples = wasps2kotka::malaise_samples
+	samples = wasps2kotka::malaise_samples
 	
 	# convert samples to upper case, to make sure they compare ok
 	x$sample = toupper(x$sample)
-	m$sample = toupper(m$sample)
+	samples$sample = toupper(samples$sample)
 		
 	# check which samples exist (=not NA, missing or a mistype)
-	sample_exists = x$sample %in% m$sample
+	sample_exists = x$sample %in% samples$sample
 	
 	# create a column for messages about problems
 	x$sample_problem = ""
@@ -374,11 +374,11 @@ verify_data = function(x){
 		
 		# get the valid samples in 'x' and what row they match in the sample list 
 		i = sample_exists & !is.na(x$date_begin) & !is.na(x$date_end)
-		s = match(x$sample[i], m$sample)
+		s = match(x$sample[i], samples$sample)
 			
 		# find specimens whose sample collecting dates don't match user input dates
-		mmb = which(x$date_begin[i] != m$date_begin[s])
-		mme = which(x$date_end[i] != m$date_end[s])
+		mmb = which(x$date_begin[i] != samples$date_begin[s])
+		mme = which(x$date_end[i] != samples$date_end[s])
 			
 		# add to column 'sample_problem'
 		x$sample_problem[i][mmb] = add(x$sample_problem[i][mmb], "Given start date does not match sample's start date.")
