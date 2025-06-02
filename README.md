@@ -4,6 +4,7 @@ R package for use at the [Zoological Museum of the University of Turku](https://
 - wasps collected by Malaise trapping in [Peru 1998-2011](https://doi.org/10.5281/zenodo.3559054)
 - wasps collected by Malaise trapping in [Uganda 2014-2015](https://doi.org/10.5281/zenodo.2225643)
 - wasps collected by canopy fogging in Ecuador
+- wasps collected in Skanssi, Finland, in 2024
 
 Takes the text of wasp labels, or the sample IDs of the wasps. Extracts data from the labels, and collects data on the sample. Then creates a csv file for uploading the data to [Kotka](https://wiki.helsinki.fi/display/digit/Manual+for+Kotka). 
 

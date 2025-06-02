@@ -15,7 +15,7 @@ get_labeldata(lab, verify = TRUE)
 A data frame with the labels and the data extracted from them. If verify=TRUE, also has column \code{sample_problem} giving info on any problems detected.
 }
 \description{
-Extract dates, sample ID and other data from the wasp labels typically found at the museum. Handles wasp labels from the Malaise trapping in Peru (1998-2011), and from the canopy fogging in Ecuador. Can also recognise sample IDs from the Malaise trapping in Uganda (2014-2015). The resulting data frame can be used as is, or as the basis for creating a Kotka upload.
+Extract dates, sample ID and other data from the wasp labels typically found at the museum. Handles wasp labels from the Malaise trapping in Peru (1998-2011), and from the canopy fogging in Ecuador. Can also recognise sample IDs from the Malaise trapping in Uganda (2014-2015) and from other samples in the sample list (e.g. Skanssi2024 samples). The resulting data frame can be used as is, or as the basis for creating a Kotka upload.
 }
 \examples{
 lab = c(  

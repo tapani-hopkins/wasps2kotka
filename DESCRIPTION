@@ -1,15 +1,16 @@
 Package: wasps2kotka
 Title: Get wasp data from labels or sample identifiers, and upload to the Kotka database
-Version: 0.1.0.9100
+Version: 0.1.2
 Authors@R: 
     person("Tapani", "Hopkins", , "tapani-hopkins@users.noreply.github.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-2256-0098"))
 Description: Functions for use at the Zoological Museum of the University of Turku.
     Mainly used to get data from wasp labels or from wasp sample IDs, 
     and then create a csv file for uploading the data to the Kotka database. 
-    Works with the really large wasp collections at Turku: 
+    Works with the large wasp collections at Turku: 
     wasps collected by Malaise trapping in Peru and Uganda,
-    and wasps collected by canopy fogging in Ecuador. 
+    wasps collected by canopy fogging in Ecuador, 
+    and wasps collected in Skanssi, Finland. 
 License: CC0
 URL: https://github.com/tapani-hopkins/wasps2kotka
 BugReports: https://github.com/tapani-hopkins/wasps2kotka/issues

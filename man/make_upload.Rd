@@ -37,7 +37,7 @@ A data frame with the Kotka upload. \cr
 Creates a Kotka upload file out of the data given to it. The data can e.g. be a data frame with labels, or a vector of sample identifiers.
 }
 \details{
-Handles wasps from the Malaise trapping in Uganda (2014-2015) and Peru (1998-2011), and from the canopy fogging in Ecuador. Other specimens will be included in the upload, but will only have minimal data.
+Handles wasps from the Malaise trapping in Uganda (2014-2015), Peru (1998-2011) and other collecting events in the sample data (e.g. Skanssi2024), and from the canopy fogging in Ecuador. Other specimens will be included in the upload, but will only have minimal data.
 
 Verification is handled by \code{\link[=verify_data]{verify_data()}}. Checks that the samples actually exist. If columns "date_begin" and "date_end" were given, also checks they match the sample collecting dates. If there are problems, a message is displayed, and optionally details on the problems are saved to file.
 The problem file contains all the input data, any data extracted from labels, and a column highlighting problems such as non-existent samples. (Note that the dates, if given, are those extracted from the labels, not necessarily those that go in the Kotka upload!)

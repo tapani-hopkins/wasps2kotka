@@ -6,7 +6,7 @@
 \alias{wasps2kotka-package}
 \title{wasps2kotka: Get wasp data from labels or sample identifiers, and upload to the Kotka database}
 \description{
-Functions for use at the Zoological Museum of the University of Turku. Mainly used to get data from wasp labels or from wasp sample IDs, and then create a csv file for uploading the data to the Kotka database. Works with the really large wasp collections at Turku: wasps collected by Malaise trapping in Peru and Uganda, and wasps collected by canopy fogging in Ecuador.
+Functions for use at the Zoological Museum of the University of Turku. Mainly used to get data from wasp labels or from wasp sample IDs, and then create a csv file for uploading the data to the Kotka database. Works with the large wasp collections at Turku: wasps collected by Malaise trapping in Peru and Uganda, wasps collected by canopy fogging in Ecuador, and wasps collected in Skanssi, Finland.
 }
 \details{
 Typical usage is one of the following:
