@@ -37,14 +37,14 @@ get_labeldata = function(lab, verify=TRUE){
 	x$sex[intersect(f, m)] = NA
 	
 	# load the sample list
-	samples = wasps2kotka::malaise_samples
+	#samples = turkuwasps::malaise_samples
 
 	# get 1998 and 2000 samples from the labels
-	for (s in which(samples$event=="Amazon1998" | samples$event=="Amazon2000")){	
+	for (s in which(m$event=="Amazon1998" | m$event=="Amazon2000")){	
 		
 		# save what this sample should look like in the labels (e.g. "H1/17 " or "H1/17\n")
-		search_for = paste0(samples$sample_1998_2000[s], "\n")
-		search_for2 = paste0(samples$sample_1998_2000[s], " ")
+		search_for = paste0(m$sample_1998_2000[s], "\n")
+		search_for2 = paste0(m$sample_1998_2000[s], " ")
 		
 		# temporarily add space to end of labels (helps find samples at end of label, e.g. "..APHI, G3/13")
 		labels = paste0(x$label, " ")
@@ -55,38 +55,38 @@ get_labeldata = function(lab, verify=TRUE){
 		l = union(l, l2)
 		
 		# save to 'x' in standard format (e.g. "h1-17")
-		x$sample[l] = samples$sample[s]
+		x$sample[l] = m$sample[s]
 		
 	}
 	
 	# get 2008 and 2011 samples from the labels
-	for (s in which(samples$event=="Amazon2008" | samples$event=="Amazon2011")){	
+	for (s in which(m$event=="Amazon2008" | m$event=="Amazon2011")){	
 		
 		# search for "Gómez" in the labels
 		l0 = grepl("G\u00F3mez", x$label)
 		
 		# search for this sample's trap (e.g. "Malaise 2") in the labels
-		l1 = grepl(samples$trap_2008_2011[s], x$label, ignore.case=T)
+		l1 = grepl(m$trap_2008_2011[s], x$label, ignore.case=T)
 		
 		# search for this end date (e.g. "05.06.2008) in the labels
-		l2 = grepl(samples$date_end[s], x$date_end, ignore.case=T)
+		l2 = grepl(m$date_end[s], x$date_end, ignore.case=T)
 		
 		# only get labels that match all the above
 		l = which(l0 & l1 & l2)
 		
 		# save to 'x' in standard format (e.g. "la2-2")
-		x$sample[l] = samples$sample[s]
+		x$sample[l] = m$sample[s]
 		
 	}
 	
 	# get Ugandan samples from the labels
-	for (s in which(samples$event=="Uganda2014")){	
+	for (s in which(m$event=="Uganda2014")){	
 		
 		# search for this sample (e.g. "R93T2-141009") in the labels
-		l = grep(samples$sample[s], x$label, ignore.case=T)
+		l = grep(m$sample[s], x$label, ignore.case=T)
 		
 		# save to 'x'
-		x$sample[l] = samples$sample[s]
+		x$sample[l] = m$sample[s]
 		
 	}
 	
