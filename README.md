@@ -6,11 +6,18 @@ R package for use at the [Zoological Museum of the University of Turku](https://
 - wasps collected by canopy fogging in Ecuador
 - wasps collected in Skanssi, Finland, in 2024
 
-Takes the text of wasp labels, or the sample IDs of the wasps. Extracts data from the labels, and collects data on the sample. Then creates a csv file for uploading the data to [Kotka](https://wiki.helsinki.fi/display/digit/Manual+for+Kotka). 
+Takes the sample identifiers of the wasps, or the text of their labels. If given labels, extracts data from them. Figures out what sample the wasps came from, then creates a csv file for uploading the data to [Kotka](https://wiki.helsinki.fi/display/digit/Manual+for+Kotka). 
 
-Typically used when faced with the daunting task of digitising thousands of tropical wasps, whose only information is on the labels. With this package, all you need to do is write down the label texts. The computer will do (almost) everything else to get the data to the [Kotka Collection Management System](https://wiki.helsinki.fi/display/digit/Manual+for+Kotka) and [FinBIF](https://laji.fi/en).
+Typically used:
 
-Also used to quickly upload the data of recently pinned Ugandan wasps to the database. All that is needed are the sample IDs of each wasp, the computer does everything else.
+1. to upload new Ugandan or Skanssi wasps to the database. All that is needed are the sample IDs of each wasp, the computer does almost everything else to get the data to the [Kotka Collection Management System](https://wiki.helsinki.fi/display/digit/Manual+for+Kotka) and [FinBIF](https://laji.fi/en).
+
+2.  when faced with the daunting task of digitising thousands of already labelled tropical wasps, whose only information is on the labels. With this package, all you need to do is write down the label texts. The computer will do (almost) everything else.
+
+As a bonus, the package also has the label templates used to label the databased wasps. They are in folder "inst/label_templates" of the source code. (Future versions of the package may allow them to be retrieved with an R command.)
+
+<img src="inst/example_images/label ZMUT.12343 front.png" height="70">
+<img src="inst/example_images/label ZMUT.12343 back.png" height="70">
 
 
 ## Installation
@@ -21,6 +28,13 @@ You can install the development version of wasps2kotka from [GitHub](https://git
 # install.packages("devtools")
 devtools::install_github("tapani-hopkins/wasps2kotka")
 ```
+
+Alternatively, you can download the entire folder and install with:
+
+``` r
+install.packages("PATH_TO_FOLDER", repos=NULL, type="source")
+```
+
 
 ## Usage
 
@@ -35,11 +49,15 @@ x = data.frame(label=c( "PERU 1.-15.12.2000, I1/17", "Tiputini 22. Oct 1998 Cano
 
 # get data from the labels, verify it and create upload
 make_upload(x)
+
+# or alternatively, if you just have sample identifiers:
+make_upload(c("cct1- 141022", "skanssiM3s2"))
+
 ```
 
 ### More detailed usage
 
-Typically, you will have a list of label texts (Peru & Ecuador) or sample identifiers (Uganda). Something like this:
+Typically, you will have a list of label texts (Peru & Ecuador) or sample identifiers (Uganda, Skanssi). Something like this:
 
 > PERU, Dept. of Loreto Iquitos area, Allpahuayo 1.-15.12.2000, white sand Sääksjärvi I.E et al. leg. Malaise trap, APHI, I1/17  
 Hylesicida sp. ♂ 1st male Det. Ilari Sääksiärvi 2011  
@@ -51,10 +69,13 @@ ZMUT NEOT ICH 209
 
 > cct1- 141022
 
+> skanssiM3s2
+
 The job of this package is to go through all of these labels, and detect that:
 - label 1 is from sample I1-17 and is a male
 - label 2 is a canopy fogged male collected at Tiputini 22 October 1998
 - label 3 is an Ugandan wasp from sample CCT1-141022
+- label 4 is a Skanssi wasp from sample skanssiM3s2
 
 .. and then pack all of the data (from labels and their associated samples) into a Kotka upload file.
 
@@ -71,19 +92,22 @@ Easiest is to name the column that has labels "label". This column name is recog
 - `sample` Sample identifier. If the labels give a different sample to this, this is the sample whose data will be added to Kotka.
 - `sex` One of "F", "M" or "U". If the sex given by labels contradicts this, this is the one which will be added to Kotka.
 
+Then can make an upload file:
+
 ``` r
 # load the package
 library(wasps2kotka)
 
 # example labels
-labels = c(
-"cct1-141022",  
+labels = c(  
 "PERU, Allpahuayo 1.-15.12.2000, Sääksjärvi I.E I1/17 Occia sp. 1. ♀ ",  
-"ECUADOR, Tiputini, 22. Oct 1998, Canopy fogging Lot# 1966 Meniscomorpha sp. 2"  
+"ECUADOR, Tiputini, 22. Oct 1998, Canopy fogging Lot# 1966 Meniscomorpha sp. 2"  , 
+"cct1-141022",
+"skanssim3s2"
 )
 
-# example data on sex (wasp 1 is female)
-sex = c("F", NA, NA)
+# example data on sex (wasp 2 is female)
+sex = c(NA, "F", NA, NA)
 
 # save labels and other data as data frame
 x = data.frame(label=labels, sex=sex)
@@ -96,5 +120,5 @@ This results in a file (kotka_upload.csv) with all the data on the wasps in the 
 
 Before uploading to Kotka, open the file in e.g. Excel, and fill in any fields which are still missing. E.g. specimen ID and species name will typically need filling in. 
 
-Then save and and upload the file to Kotka. 
+Then save as Excel or csv, and upload the file to Kotka. 
 
