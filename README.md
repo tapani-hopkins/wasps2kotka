@@ -6,18 +6,18 @@ R package for use at the [Zoological Museum of the University of Turku](https://
 - wasps collected by canopy fogging in Ecuador
 - wasps collected in Skanssi, Finland, in 2024
 
-Takes the sample identifiers of the wasps, or the text of their labels. If given labels, extracts data from them. Figures out what sample the wasps came from, then creates a csv file for uploading the data to [Kotka](https://wiki.helsinki.fi/display/digit/Manual+for+Kotka). 
+Takes the sample identifiers of the wasps, or the text of their labels. If given labels, extracts data from them. Figures out what sample the wasps came from, then creates a csv file for uploading the data to [Kotka](https://wiki.helsinki.fi/display/digit/Manual+for+Kotka) and [FinBIF](https://laji.fi/en). 
 
 Typically used:
 
-1. to upload new Ugandan or Skanssi wasps to the database. All that is needed are the sample IDs of each wasp, the computer does almost everything else to get the data to the [Kotka Collection Management System](https://wiki.helsinki.fi/display/digit/Manual+for+Kotka) and [FinBIF](https://laji.fi/en).
+1. to upload new Ugandan or Skanssi wasps to the database. All that is needed are the sample IDs of each wasp.
 
-2.  when faced with the daunting task of digitising thousands of already labelled tropical wasps, whose only information is on the labels. With this package, all you need to do is write down the label texts. The computer will do (almost) everything else.
+2.  when faced with the daunting task of digitising thousands of already labelled tropical wasps, whose only information is on the labels. All that are needed are the label texts.
 
-As a bonus, the package also has the label templates used to label the databased wasps. They are in folder "inst/label_templates" of the source code. (Future versions of the package may allow them to be retrieved with an R command.)
+> <img src="inst/example_images/label_ZMUT.12343.png" height="70">
+>
+> As a bonus, the package also has templates used to label the databased wasps. They are in folder "inst/label_templates" of the source code. 
 
-<img src="inst/example_images/label ZMUT.12343 front.png" height="70">
-<img src="inst/example_images/label ZMUT.12343 back.png" height="70">
 
 
 ## Installation
@@ -44,14 +44,15 @@ install.packages("PATH_TO_FOLDER", repos=NULL, type="source")
 # load the package
 library(wasps2kotka)
 
-# save example labels
+# create upload for two wasps from Uganda and Skanssi
+make_upload(c("cct1- 141022", "skanssiM3s2"))
+
+# for labels, save as a data frame..
 x = data.frame(label=c( "PERU 1.-15.12.2000, I1/17", "Tiputini 22. Oct 1998 Canopy fogging" ))
 
-# get data from the labels, verify it and create upload
+# .. then get data, verify it and create upload
 make_upload(x)
 
-# or alternatively, if you just have sample identifiers:
-make_upload(c("cct1- 141022", "skanssiM3s2"))
 
 ```
 
