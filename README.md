@@ -18,6 +18,7 @@ Typically used:
 >
 > As a bonus, the package also has templates used to label the databased wasps. They are in folder "inst/label_templates" of the source code. 
 
+> As a second bonus, the package also has a complete list of the samples collected in the Uganda 2014-2015, Peru 1998, Peru 2000, Peru 2008, Peru 2011, and Skanssi2024 collecting events. They are in folder "inst/extdata" as csv, and also load into R as variables `m` (basic data) and `m_kotka` (complete data).
 
 
 ## Installation
