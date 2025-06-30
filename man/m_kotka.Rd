@@ -5,7 +5,7 @@
 \alias{m_kotka}
 \title{Malaise samples collected in Peru, Uganda and elsewhere (Kotka format)}
 \format{
-A data frame with 1538 rows (one row for each sample) and 46 variables. The variables are described in \url{https://kotka.luomus.fi/documentation/field}.
+A data frame with 1540 rows (one row for each sample) and 46 variables. The variables are described in \url{https://kotka.luomus.fi/documentation/field}.
 }
 \usage{
 m_kotka
