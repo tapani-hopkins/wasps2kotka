@@ -14,7 +14,7 @@ Typically used:
 
 2.  when faced with the daunting task of digitising thousands of already labelled tropical wasps, whose only information is on the labels. All that are needed are the label texts.
 
-> <img src="inst/example_images/‎‎label_ZMUT.12343.png" height="70">
+> <img src="inst/example_images/‎‎label_ZMUT12343.png" height="70">
 >
 > As a bonus, the package also has templates used to label the databased wasps. They are in folder "inst/label_templates" of the source code. 
 
