@@ -1,6 +1,6 @@
 Package: wasps2kotka
 Title: Get wasp data from labels or sample identifiers, and upload to the Kotka database
-Version: 0.1.3
+Version: 0.1.4
 Authors@R: 
     person("Tapani", "Hopkins", , "tapani-hopkins@users.noreply.github.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-2256-0098"))
