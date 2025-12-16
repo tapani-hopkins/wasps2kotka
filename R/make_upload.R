@@ -5,9 +5,9 @@
 #' Handles wasps from the Malaise trapping in Uganda (2014-2015), Peru (1998-2011) and other collecting events in the sample data (e.g. Skanssi2024), and from the canopy fogging in Ecuador. Other specimens will be included in the upload, but will only have minimal data.  
 #'
 #' Verification is handled by [verify_data()]. Checks that the samples actually exist. If columns "date_begin" and "date_end" were given, also checks they match the sample collecting dates. If there are problems, a message is displayed, and optionally details on the problems are saved to file. 
-#' The problem file contains all the input data, any data extracted from labels, and a column highlighting problems such as non-existent samples. (Note that the dates, if given, are those extracted from the labels, not necessarily those that go in the Kotka upload!)
+#' The problem file contains all the input data, any data extracted from labels, and a column highlighting problems such as non-existent samples. (Note that the dates in the problem file, if given, are those extracted from the labels, not necessarily those that go in the Kotka upload!)
 #'
-#' The input data (`x`) must contain column "sample" or "label" (or be a vector of samples). If only "label" is given, samples and other data will be extracted from the labels, and added to 'x'. Existing data is not overwritten: creates a new column if one didn't exist, otherwise only fills in gaps in the column. 
+#' The input data (`x`) must contain column "sample" or "label" (or be a vector of samples). If only "label" is given, samples and other data will be extracted from the labels, and added to 'x'. Existing data is not overwritten: creates a new column if one didn't exist, otherwise only fills in gaps in the column. If "sample" and "label" are given, the data will come from the sample, but the label text will be included in the data. This is useful if the label has the wrong sample on it (which happens surprisingly often).
 #' 
 #' The following columns of 'x', if present, are matched to their equivalents in Kotka:
 #' * box
@@ -19,7 +19,7 @@
 #' Any other columns are currently ignored.
 #'
 #' @param x One of the following:
-#' * A data frame with column "sample" or "label", and optionally other columns. The samples will be used to fill in the Kotka upload. If labels are given, data is extracted from them with [get_labeldata()] and added to the data frame (without overwriting). 
+#' * A data frame with column "sample" or "label", and optionally other columns. The samples will be used to fill in the Kotka upload. If labels are given, data is extracted from them with [get_labeldata()] and added to the data frame (without overwriting). If both columns are present, the data will based on the sample if it is given (=not NA), otherwise on the label.
 #' * A vector, in which case it is assumed to contain sample IDs. 
 #' @param nwasps How many wasps each label or sample corresponds to. Numeric vector of same length (or number of rows) as 'x', or of length 1. Default is "1", every label corresponds to a single wasp.
 #' @param verify If TRUE (the default), checks the input data in `x`. See Details. 
