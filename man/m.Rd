@@ -5,7 +5,7 @@
 \alias{m}
 \title{Malaise samples collected in Peru, Uganda and elsewhere (overview)}
 \format{
-A data frame with 1540 rows (one row for each sample) and 12 variables:
+A data frame with 1541 rows (one row for each sample) and 12 variables:
 \describe{
 \item{sample}{Sample ID, plaintext form used at the Turku Zoological Museum}
 \item{event}{Malaise trapping that collected the sample, e.g. "Amazon 1998"}

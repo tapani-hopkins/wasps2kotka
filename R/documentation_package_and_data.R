@@ -45,7 +45,7 @@
 #'
 #' An abbreviated version of the `m_kotka` dataset. Contains basic data on what Malaise samples were collected in e.g. Peru and Uganda, including how the samples might be written on labels. Used by the script to e.g. recognise sample IDs from labels.
 #'
-#' @format A data frame with 1540 rows (one row for each sample) and 12 variables:
+#' @format A data frame with 1541 rows (one row for each sample) and 12 variables:
 #' \describe{
 #'   \item{sample}{Sample ID, plaintext form used at the Turku Zoological Museum}
 #'   \item{event}{Malaise trapping that collected the sample, e.g. "Amazon 1998"}
@@ -73,5 +73,5 @@
 #' - convert to csv
 #' - read in to R keeping the column names intact, e.g. `read.csv(file, colClasses="character", check.names=F)`
 #'
-#' @format A data frame with 1540 rows (one row for each sample) and 46 variables. The variables are described in [https://kotka.luomus.fi/documentation/field](https://kotka.luomus.fi/documentation/field).
+#' @format A data frame with 1541 rows (one row for each sample) and 46 variables. The variables are described in [https://kotka.luomus.fi/documentation/field](https://kotka.luomus.fi/documentation/field).
 "m_kotka"
